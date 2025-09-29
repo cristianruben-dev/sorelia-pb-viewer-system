@@ -52,8 +52,6 @@ export function UserCreateDialog({
       onOpenChange(false);
       await onSuccess();
     } catch (error) {
-      console.error("Error creating user:", error);
-      // Solo mostrar toast si no se mostró antes
       if (!(error instanceof Error && error.message.includes("Error al crear usuario"))) {
         toast.error("Error inesperado", {
           description: "Ha ocurrido un error al crear el usuario"

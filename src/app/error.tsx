@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator";
 import { AlertTriangle, Home, RotateCcw } from "lucide-react";
 
-export default function Error({
+export default function ErrorComponent({
   reset,
 }: {
   reset: () => void;

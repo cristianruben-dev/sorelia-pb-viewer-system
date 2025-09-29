@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+import { type NextRequest, NextResponse } from 'next/server';
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from '@/lib/auth-server';
 import { isUserAdmin } from '@/lib/access-control';
+
+import { z } from 'zod';
 
 const assignRoleSchema = z.object({
   userId: z.string().min(1, 'El ID de usuario es requerido'),

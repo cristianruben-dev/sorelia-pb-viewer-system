@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -55,8 +53,6 @@ export function RoleCreateDialog({
       onOpenChange(false);
       await onSuccess();
     } catch (error) {
-      console.error("Error creating role:", error);
-      // Solo mostrar toast si no se mostró antes
       if (!(error instanceof Error && error.message.includes("Error al crear rol"))) {
         toast.error("Error inesperado", {
           description: "Ha ocurrido un error al crear el rol"

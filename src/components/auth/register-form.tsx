@@ -77,14 +77,11 @@ export function RegisterForm() {
       return;
     }
 
-    // Actualizar el estado local
     setSelectedRoles([...selectedRoles, roleToAdd]);
 
-    // Actualizar el formulario
     const currentRoleIds = getValues("roleIds");
     setValue("roleIds", [...currentRoleIds, selectedRoleId]);
 
-    // Limpiar la selección
     setSelectedRoleId("");
 
     toast.success("Rol agregado", {
@@ -95,10 +92,8 @@ export function RegisterForm() {
   const handleRemoveRole = (roleId: string) => {
     const roleToRemove = selectedRoles.find(r => r.id === roleId);
 
-    // Actualizar el estado local
     setSelectedRoles(selectedRoles.filter(r => r.id !== roleId));
 
-    // Actualizar el formulario
     const currentRoleIds = getValues("roleIds");
     setValue("roleIds", currentRoleIds.filter(id => id !== roleId));
 
@@ -114,7 +109,6 @@ export function RegisterForm() {
     setError(null);
 
     try {
-      // Registrar usuario
       const result = await signUp.email({
         email: data.email,
         password: data.password,

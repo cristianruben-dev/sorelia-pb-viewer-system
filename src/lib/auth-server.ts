@@ -1,20 +1,10 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
-import type { User, UserRole, Role } from "@prisma/client";
 import { headers } from "next/headers";
 
-export type UserWithRoles = User & {
-  roles: (UserRole & {
-    role: Role;
-  })[];
-};
+import type { UserWithRoles } from "./access-control";
 
-export type UserWithSubscription = UserWithRoles;
-
-/**
- * Obtiene la sesión del servidor
- */
 export async function getServerSession() {
   try {
     const session = await auth.api.getSession({
@@ -28,9 +18,6 @@ export async function getServerSession() {
   }
 }
 
-/**
- * Obtiene el usuario actual con información de roles
- */
 export async function getCurrentUser(): Promise<UserWithRoles> {
   const session = await getServerSession();
 
@@ -56,59 +43,3 @@ export async function getCurrentUser(): Promise<UserWithRoles> {
 
   return userWithRoles;
 }
-
-/**
- * Obtiene el usuario actual si está autenticado, sino retorna null
- * Útil para páginas que pueden mostrar contenido diferente según autenticación
- */
-export async function getOptionalUser(): Promise<UserWithRoles | null> {
-  const session = await getServerSession();
-
-  if (!session?.user) {
-    return null;
-  }
-
-  const userWithRoles = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    include: {
-      roles: {
-        include: {
-          role: true,
-        },
-      },
-    },
-  });
-
-  return userWithRoles;
-}
-
-/**
- * Función para obtener un usuario con su suscripción y datos relacionados
- * Solo funciona desde el lado del servidor
- */
-export async function getUser(): Promise<UserWithSubscription | null> {
-  const session = await auth.api.getSession({
-    headers: {} as any
-  });
-
-  if (!session?.user?.id) {
-    return null;
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    include: {
-      roles: {
-        include: {
-          role: true,
-        },
-      },
-    },
-  });
-
-  if (!user) {
-    return null;
-  }
-
-  return user;
-} 

@@ -6,9 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog";
 import { UserRolesPopover } from "@/components/admin/user-roles-popover";
 import { Pencil, Trash2 } from "lucide-react";
-import { formatDate } from "@/lib/utils";
 import { toast } from "sonner";
-import type { User, UserRole, Role } from "@prisma/client";
 import {
   Tooltip,
   TooltipContent,
@@ -16,18 +14,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-type UserWithRoles = User & {
-  roles: Array<UserRole & {
-    role: Role;
-  }>;
-  _count: {
-    sessions: number;
-  };
-};
-
-interface UserColumnsProps {
-  onRolesUpdated: () => void;
-}
+import type { UserWithRoles } from "@/lib/access-control";
 
 export const createUserColumns = (onRolesUpdated: () => void): ColumnDef<UserWithRoles>[] => [
   {
@@ -130,8 +117,6 @@ export const createUserColumns = (onRolesUpdated: () => void): ColumnDef<UserWit
 
           onRolesUpdated(); // Recargar datos después de eliminar
         } catch (error) {
-          console.error("Error deleting user:", error);
-          // Solo mostrar toast si no se mostró antes
           if (!(error instanceof Error && error.message.includes("Error al eliminar usuario"))) {
             toast.error("Error inesperado", {
               description: "Ha ocurrido un error al eliminar el usuario"
@@ -170,5 +155,4 @@ export const createUserColumns = (onRolesUpdated: () => void): ColumnDef<UserWit
   },
 ];
 
-// Exportar también la función original para compatibilidad
 export const userColumns = createUserColumns(() => { }); 
