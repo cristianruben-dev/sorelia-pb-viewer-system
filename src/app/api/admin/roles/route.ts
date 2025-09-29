@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth-server';
-import { db } from '@/lib/db';
+import { prisma } from "@/lib/prisma";
 import { z } from 'zod';
 import { isUserAdmin } from '@/lib/access-control';
 
@@ -22,7 +22,7 @@ export async function GET() {
       );
     }
 
-    const roles = await db.role.findMany({
+    const roles = await prisma.role.findMany({
       include: {
         _count: {
           select: {
@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     const validatedData = createRoleSchema.parse(body);
 
     // Verificar que el nombre del rol no existe
-    const existingRole = await db.role.findUnique({
+    const existingRole = await prisma.role.findUnique({
       where: { name: validatedData.name },
     });
 
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newRole = await db.role.create({
+    const newRole = await prisma.role.create({
       data: {
         name: validatedData.name,
         isAdmin: validatedData.isAdmin,

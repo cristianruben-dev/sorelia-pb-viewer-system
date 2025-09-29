@@ -7,7 +7,7 @@ export default function LoginPage() {
     <main className="p-4">
       <Image
         src="/logo-kepler.avif"
-        alt="Logo Kepler"
+        alt="Logo Sorelia"
         width={300}
         height={100}
         className="mb-10 mx-auto"

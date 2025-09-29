@@ -1,6 +1,6 @@
 import { getCurrentUser } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,7 +27,7 @@ export default async function DashboardsAdminPage() {
     redirect("/dashboard");
   }
 
-  const dashboards = await db.powerBIContent.findMany({
+  const dashboards = await prisma.powerBIContent.findMany({
     include: {
       roles: {
         include: {

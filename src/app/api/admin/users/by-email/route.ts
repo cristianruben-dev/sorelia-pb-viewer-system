@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from '@/lib/auth-server';
 import { isUserAdmin } from '@/lib/access-control';
 
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const foundUser = await db.user.findUnique({
+    const foundUser = await prisma.user.findUnique({
       where: { email },
       include: {
         roles: {

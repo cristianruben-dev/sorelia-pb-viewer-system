@@ -1,6 +1,6 @@
 import { getCurrentUser } from "@/lib/auth-server";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { UsersManagement } from "./users-management";
 import { isUserAdmin } from "@/lib/access-control";
 
@@ -14,7 +14,7 @@ export default async function UsuariosPage() {
     redirect("/dashboard");
   }
 
-  const users = await db.user.findMany({
+  const users = await prisma.user.findMany({
     include: {
       roles: {
         include: {

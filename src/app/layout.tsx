@@ -5,8 +5,8 @@ import { Geist } from "next/font/google";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
-	title: "Kepler Oil & Gas",
-	description: "Kepler Oil & Gas - Visualizador de reportes Power BI",
+	title: "Sorelia",
+	description: "Sorelia - Visualizador de reportes Power BI",
 	icons: {
 		icon: [
 			{ url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },

@@ -1,6 +1,6 @@
 import { getCurrentUser } from "@/lib/auth-server";
 import { redirect, notFound } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { canUserAccessReport } from "@/lib/access-control";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Maximize } from "lucide-react";
@@ -22,7 +22,7 @@ export default async function ReportePage({ params }: PageProps) {
     redirect("/login");
   }
 
-  const report = await db.powerBIContent.findUnique({
+  const report = await prisma.powerBIContent.findUnique({
     where: { id: resolvedParams.id, published: true },
     include: {
       roles: {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth-server';
-import { db } from '@/lib/db';
+import { prisma } from "@/lib/prisma";
 import { z } from 'zod';
 import { isUserAdmin } from '@/lib/access-control';
 
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
     }
 
-    const targetUser = await db.user.findUnique({
+    const targetUser = await prisma.user.findUnique({
       where: { id },
       include: {
         roles: {
@@ -66,7 +66,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const validatedData = updateUserSchema.parse(body);
 
     // Verificar que el usuario existe
-    const existingUser = await db.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { id },
     });
 
@@ -76,7 +76,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     // Si se está actualizando el email, verificar que no existe
     if (validatedData.email && validatedData.email !== existingUser.email) {
-      const emailExists = await db.user.findUnique({
+      const emailExists = await prisma.user.findUnique({
         where: { email: validatedData.email },
       });
 
@@ -94,7 +94,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     if (validatedData.email) updateData.email = validatedData.email;
 
     if (Object.keys(updateData).length > 0) {
-      await db.user.update({
+      await prisma.user.update({
         where: { id },
         data: updateData,
       });
@@ -103,7 +103,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     // Si se está actualizando el rol
     if (validatedData.roleId) {
       // Verificar que el rol existe
-      const role = await db.role.findUnique({
+      const role = await prisma.role.findUnique({
         where: { id: validatedData.roleId },
       });
 
@@ -112,11 +112,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       }
 
       // Eliminar roles existentes y asignar el nuevo
-      await db.userRole.deleteMany({
+      await prisma.userRole.deleteMany({
         where: { userId: id },
       });
 
-      await db.userRole.create({
+      await prisma.userRole.create({
         data: {
           userId: id,
           roleId: validatedData.roleId,
@@ -125,7 +125,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     }
 
     // Obtener el usuario actualizado
-    const updatedUser = await db.user.findUnique({
+    const updatedUser = await prisma.user.findUnique({
       where: { id },
       include: {
         roles: {
@@ -168,7 +168,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // Verificar que el usuario existe
-    const existingUser = await db.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { id },
     });
 
@@ -185,7 +185,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // Eliminar el usuario (esto eliminará en cascada las relaciones)
-    await db.user.delete({
+    await prisma.user.delete({
       where: { id },
     });
 

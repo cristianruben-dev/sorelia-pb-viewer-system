@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-server";
 import { isUserAdmin } from "@/lib/access-control";
 
@@ -20,7 +20,7 @@ export async function GET() {
       return NextResponse.json({ error: "No autorizado" }, { status: 403 });
     }
 
-    const dashboards = await db.powerBIContent.findMany({
+    const dashboards = await prisma.powerBIContent.findMany({
       include: {
         roles: {
           include: {
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const validatedData = createDashboardSchema.parse(body);
 
     // Verificar que todos los roles existen
-    const roles = await db.role.findMany({
+    const roles = await prisma.role.findMany({
       where: { id: { in: validatedData.roleIds } },
     });
 
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Uno o más roles no encontrados" }, { status: 404 });
     }
 
-    const dashboard = await db.powerBIContent.create({
+    const dashboard = await prisma.powerBIContent.create({
       data: {
         title: validatedData.title,
         tags: validatedData.tags || [],

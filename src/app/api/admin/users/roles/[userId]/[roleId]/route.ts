@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from '@/lib/auth-server';
 import { isUserAdmin } from '@/lib/access-control';
 
@@ -17,7 +17,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // Verificar que el usuario existe
-    const existingUser = await db.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { id: userId },
     });
 
@@ -29,7 +29,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // Verificar que el rol existe
-    const role = await db.role.findUnique({
+    const role = await prisma.role.findUnique({
       where: { id: roleId },
     });
 
@@ -38,7 +38,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // Buscar y eliminar la relación usuario-rol
-    const userRole = await db.userRole.findFirst({
+    const userRole = await prisma.userRole.findFirst({
       where: {
         userId: userId,
         roleId: roleId,
@@ -52,7 +52,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    await db.userRole.delete({
+    await prisma.userRole.delete({
       where: {
         id: userRole.id,
       },

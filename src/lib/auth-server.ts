@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import type { User, UserRole, Role } from "@prisma/client";
 import { headers } from "next/headers";
 
@@ -39,7 +39,7 @@ export async function getCurrentUser(): Promise<UserWithRoles> {
   }
 
   // Para obtener los roles desde la base de datos en lugar de la sesión
-  const userWithRoles = await db.user.findUnique({
+  const userWithRoles = await prisma.user.findUnique({
     where: { id: session.user.id },
     include: {
       roles: {
@@ -68,7 +68,7 @@ export async function getOptionalUser(): Promise<UserWithRoles | null> {
     return null;
   }
 
-  const userWithRoles = await db.user.findUnique({
+  const userWithRoles = await prisma.user.findUnique({
     where: { id: session.user.id },
     include: {
       roles: {
@@ -95,7 +95,7 @@ export async function getUser(): Promise<UserWithSubscription | null> {
     return null;
   }
 
-  const user = await db.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     include: {
       roles: {

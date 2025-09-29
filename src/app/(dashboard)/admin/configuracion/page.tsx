@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { ConfigurationManagement } from "./configuration-management";
 import { getCurrentUser } from "@/lib/auth-server";
 import { isUserAdmin } from "@/lib/access-control";
@@ -14,7 +14,7 @@ export default async function ConfiguracionPage() {
     redirect("/dashboard");
   }
 
-  const roles = await db.role.findMany({
+  const roles = await prisma.role.findMany({
     include: {
       _count: {
         select: {

@@ -66,7 +66,7 @@ export function DashboardNav({ user }: DashboardNavProps) {
           <div className="flex items-center gap-8">
             <Image
               src="/logo-kepler.avif"
-              alt="Logo Kepler"
+              alt="Logo Sorelia"
               width={200}
               height={50}
             />

@@ -1,4 +1,4 @@
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import type { User, Role, PowerBIContent, UserRole, PowerBIContentRole } from "@prisma/client";
 
 export type UserWithRoles = User & {
@@ -77,7 +77,7 @@ export async function filterAccessibleReports(user: UserWithRoles | null) {
       }
     };
 
-  return await db.powerBIContent.findMany({
+  return await prisma.powerBIContent.findMany({
     where: whereClause,
     include: {
       roles: {
@@ -134,7 +134,7 @@ export function getPrimaryRole(user: UserWithRoles | null): {
  * Obtiene todos los roles desde la base de datos
  */
 export async function getActiveRoles() {
-  return await db.role.findMany({
+  return await prisma.role.findMany({
     orderBy: { name: "asc" },
   });
 }
@@ -143,7 +143,7 @@ export async function getActiveRoles() {
  * Obtiene todos los niveles de acceso desde la base de datos (alias para getActiveRoles)
  */
 export async function getActiveAccessLevels() {
-  return await db.role.findMany({
+  return await prisma.role.findMany({
     orderBy: { name: "asc" },
   });
 } 

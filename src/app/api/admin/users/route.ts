@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { db } from '@/lib/db';
+import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from '@/lib/auth-server';
 import { isUserAdmin } from '@/lib/access-control';
 
@@ -18,7 +18,7 @@ export async function GET() {
       return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
     }
 
-    const users = await db.user.findMany({
+    const users = await prisma.user.findMany({
       include: {
         roles: {
           include: {
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
     const validatedData = createUserSchema.parse(body);
 
     // Verificar que el email no existe
-    const existingUser = await db.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { email: validatedData.email },
     });
 
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Crear usuario sin roles
-    const newUser = await db.user.create({
+    const newUser = await prisma.user.create({
       data: {
         name: validatedData.name,
         email: validatedData.email,

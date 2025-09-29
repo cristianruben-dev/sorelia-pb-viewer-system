@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { db } from '@/lib/db';
+import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from '@/lib/auth-server';
 import { isUserAdmin } from '@/lib/access-control';
 
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     const validatedData = assignRoleSchema.parse(body);
 
     // Verificar que el usuario existe
-    const existingUser = await db.user.findUnique({
+    const existingUser = await prisma.user.findUnique({
       where: { id: validatedData.userId },
     });
 
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar que el rol existe
-    const role = await db.role.findUnique({
+    const role = await prisma.role.findUnique({
       where: { id: validatedData.roleId },
     });
 
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verificar si la relación ya existe
-    const existingRelation = await db.userRole.findFirst({
+    const existingRelation = await prisma.userRole.findFirst({
       where: {
         userId: validatedData.userId,
         roleId: validatedData.roleId,
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Crear la relación usuario-rol
-    const userRole = await db.userRole.create({
+    const userRole = await prisma.userRole.create({
       data: {
         userId: validatedData.userId,
         roleId: validatedData.roleId,

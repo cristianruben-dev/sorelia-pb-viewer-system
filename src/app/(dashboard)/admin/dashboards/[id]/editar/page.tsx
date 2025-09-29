@@ -1,10 +1,9 @@
 import { redirect, notFound } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-server";
 import { EditDashboardClient } from "./edit-dashboard-client";
 import { isUserAdmin } from "@/lib/access-control";
 
-// Marcar como página dinámica para evitar errores con headers()
 export const dynamic = 'force-dynamic';
 
 export default async function EditDashboardPage({
@@ -20,7 +19,7 @@ export default async function EditDashboardPage({
   }
 
   const [dashboard, accessLevels] = await Promise.all([
-    db.powerBIContent.findUnique({
+    prisma.powerBIContent.findUnique({
       where: { id: resolvedParams.id },
       include: {
         roles: {
@@ -30,7 +29,7 @@ export default async function EditDashboardPage({
         },
       },
     }),
-    db.role.findMany({
+    prisma.role.findMany({
       orderBy: { name: "asc" },
     }),
   ]);

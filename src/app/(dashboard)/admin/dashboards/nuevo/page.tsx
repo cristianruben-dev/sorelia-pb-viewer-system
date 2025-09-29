@@ -1,10 +1,9 @@
 import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-server";
 import { NuevoDashboardClient } from "./nuevo-dashboard-client";
 import { isUserAdmin } from "@/lib/access-control";
 
-// Marcar como página dinámica para evitar errores con headers()
 export const dynamic = 'force-dynamic';
 
 export default async function NuevoDashboardPage() {
@@ -14,7 +13,7 @@ export default async function NuevoDashboardPage() {
     redirect("/dashboard");
   }
 
-  const accessLevels = await db.role.findMany({
+  const accessLevels = await prisma.role.findMany({
     orderBy: { name: "asc" },
   });
 

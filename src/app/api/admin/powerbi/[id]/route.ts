@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { db } from "@/lib/db";
+import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-server";
 import { isUserAdmin } from "@/lib/access-control";
 
@@ -25,7 +25,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "No autorizado" }, { status: 403 });
     }
 
-    const dashboard = await db.powerBIContent.findUnique({
+    const dashboard = await prisma.powerBIContent.findUnique({
       where: { id },
       include: {
         roles: {
@@ -63,7 +63,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const validatedData = updateDashboardSchema.parse(body);
 
     // Verificar que el dashboard existe
-    const existingDashboard = await db.powerBIContent.findUnique({
+    const existingDashboard = await prisma.powerBIContent.findUnique({
       where: { id },
     });
 
@@ -73,7 +73,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     // Si se están actualizando los roles, verificar que todos existen
     if (validatedData.roleIds) {
-      const roles = await db.role.findMany({
+      const roles = await prisma.role.findMany({
         where: { id: { in: validatedData.roleIds } },
       });
 
@@ -102,7 +102,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       };
     }
 
-    const updatedDashboard = await db.powerBIContent.update({
+    const updatedDashboard = await prisma.powerBIContent.update({
       where: { id },
       data: updateData,
       include: {
@@ -141,7 +141,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // Verificar que el dashboard existe
-    const existingDashboard = await db.powerBIContent.findUnique({
+    const existingDashboard = await prisma.powerBIContent.findUnique({
       where: { id },
     });
 
@@ -149,7 +149,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Dashboard no encontrado" }, { status: 404 });
     }
 
-    await db.powerBIContent.delete({
+    await prisma.powerBIContent.delete({
       where: { id },
     });
 
