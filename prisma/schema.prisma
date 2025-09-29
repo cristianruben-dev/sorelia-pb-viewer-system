@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String?
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  roles    UserRole[]
+  sessions Session[]
+  accounts Account[]
+
+  @@map("user")
+}
+
+model Session {
+  id                   String   @id @default(cuid())
+  expiresAt            DateTime
+  token                String   @unique
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  ipAddress            String?
+  userAgent            String?
+  userId               String
+  activeOrganizationId String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verification")
+}
+
+// Business Models
+
+model PowerBIContent {
+  id         String   @id @default(cuid())
+  title      String
+  iframeHtml String // HTML completo del iframe de PowerBI
+  published  Boolean  @default(true)
+  tags       String[] // Tags para organización
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  roles PowerBIContentRole[]
+
+  @@map("powerbi_contents")
+}
+
+// Tabla intermedia para la relación muchos-a-muchos entre usuarios y roles
+model UserRole {
+  id        String   @id @default(cuid())
+  userId    String
+  roleId    String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+  @@map("user_roles")
+}
+
+// Tabla intermedia para la relación muchos-a-muchos entre PowerBI content y roles
+model PowerBIContentRole {
+  id               String   @id @default(cuid())
+  powerBIContentId String
+  roleId           String
+  createdAt        DateTime @default(now())
+
+  powerBIContent PowerBIContent @relation(fields: [powerBIContentId], references: [id], onDelete: Cascade)
+  role           Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([powerBIContentId, roleId])
+  @@map("powerbi_content_roles")
+}
+
+// Modelo completo de roles con todos los campos necesarios
+model Role {
+  id        String   @id @default(cuid())
+  name      String   @unique // FREE, PREMIUM, ADMIN, etc.
+  isAdmin   Boolean  @default(false) // Si es un rol de administrador
+  createdAt DateTime @default(now())
+
+  userRoles           UserRole[]
+  powerBIContentRoles PowerBIContentRole[]
+
+  @@map("roles")
+}
