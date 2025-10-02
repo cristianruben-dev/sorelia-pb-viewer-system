@@ -26,20 +26,23 @@ export function SystemLogo() {
     }
   };
 
-  if (logoUrl) {
+  if (logoUrl && logoUrl.trim() !== "") {
     return (
       <Image
         src={logoUrl}
         alt={title}
         width={200}
         height={50}
-        className="h-12 w-auto"
+        className="h-12 w-auto object-contain"
+        priority
       />
     );
   }
 
+  // Mostrar placeholder cuando no hay logo configurado
   return (
-    <div className="flex items-center gap-2 bg-neutral-200 h-12 w-[200px] rounded-lg">
+    <div className="flex items-center justify-center bg-neutral-200 h-12 w-[200px] rounded-lg">
+      <span className="text-sm font-semibold text-neutral-600">{title}</span>
     </div>
   );
 }

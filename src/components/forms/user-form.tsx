@@ -142,7 +142,6 @@ export function UserForm({ user, onSubmit, isLoading = false }: UserFormProps) {
                 <SelectContent>
                   <SelectItem value="user">Usuario</SelectItem>
                   <SelectItem value="admin">Administrador</SelectItem>
-                  <SelectItem value="premium">Premium</SelectItem>
                 </SelectContent>
               </Select>
               <FormDescription>

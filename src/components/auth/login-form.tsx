@@ -37,20 +37,22 @@ export function LoginForm() {
     setError(null);
 
     try {
-      await signIn(data.email, data.password);
+      const result = await signIn(data.email, data.password);
 
-      toast.success("¡Bienvenido!", {
-        description: "Has iniciado sesión correctamente"
-      });
-      router.push(callbackUrl);
-      router.refresh();
+      if (result) {
+        toast.success("¡Bienvenido!", {
+          description: "Has iniciado sesión correctamente"
+        });
+
+        // Usar window.location para forzar la recarga completa
+        window.location.href = callbackUrl;
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Error al iniciar sesión. Inténtalo de nuevo.";
       setError(errorMessage);
       toast.error("Error al iniciar sesión", {
         description: errorMessage
       });
-    } finally {
       setIsLoading(false);
     }
   };

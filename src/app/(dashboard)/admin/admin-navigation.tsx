@@ -1,52 +1,63 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, BarChart3, FileText, Settings } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export function AdminNavigation() {
   const pathname = usePathname();
 
-  let activeTab = "usuarios";
-  if (pathname.includes("/admin/dashboards")) {
-    activeTab = "dashboards";
-  } else if (pathname.includes("/admin/logs")) {
-    activeTab = "logs";
-  } else if (pathname.includes("/admin/configuracion")) {
-    activeTab = "configuracion";
-  } else if (pathname.includes("/admin/usuarios")) {
-    activeTab = "usuarios";
-  }
+  const isActive = (path: string) => {
+    if (path === "/admin/usuarios") return pathname === path || pathname === "/admin";
+    return pathname.startsWith(path);
+  };
+
+  const navItems = [
+    {
+      href: "/admin/usuarios",
+      label: "Usuarios",
+      icon: Users,
+    },
+    {
+      href: "/admin/dashboards",
+      label: "Dashboards",
+      icon: BarChart3,
+    },
+    {
+      href: "/admin/logs",
+      label: "Logs",
+      icon: FileText,
+    },
+    {
+      href: "/admin/configuracion",
+      label: "Configuración",
+      icon: Settings,
+    },
+  ];
 
   return (
-    <Tabs value={activeTab} className="w-full">
-      <TabsList className="grid w-fit grid-cols-4">
-        <TabsTrigger value="usuarios" asChild>
-          <Link href="/admin/usuarios" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            Usuarios
-          </Link>
-        </TabsTrigger>
-        <TabsTrigger value="dashboards" asChild>
-          <Link href="/admin/dashboards" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
-            Dashboards
-          </Link>
-        </TabsTrigger>
-        <TabsTrigger value="logs" asChild>
-          <Link href="/admin/logs" className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            Logs
-          </Link>
-        </TabsTrigger>
-        <TabsTrigger value="configuracion" asChild>
-          <Link href="/admin/configuracion" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
-            Configuración
-          </Link>
-        </TabsTrigger>
-      </TabsList>
-    </Tabs>
+    <div className="flex gap-2 border-b pb-4 overflow-x-auto">
+      {navItems.map((item) => {
+        const active = isActive(item.href);
+        return (
+          <Button
+            key={item.href}
+            variant={active ? "default" : "ghost"}
+            asChild
+            className={cn(
+              "flex items-center gap-2",
+              active && "bg-primary text-primary-foreground"
+            )}
+          >
+            <Link href={item.href}>
+              <item.icon className="h-4 w-4" />
+              {item.label}
+            </Link>
+          </Button>
+        );
+      })}
+    </div>
   );
 } 
