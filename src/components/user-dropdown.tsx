@@ -108,7 +108,6 @@ export function UserDropdown({ user }: UserDropdownProps) {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Diálogo de ajustes */}
       <UserSettingsDialog
         user={user}
         open={showSettings}
