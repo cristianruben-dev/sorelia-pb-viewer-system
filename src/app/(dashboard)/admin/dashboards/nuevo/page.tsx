@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth-server";
 import { NuevoDashboardClient } from "./nuevo-dashboard-client";
 import { isUserAdmin } from "@/lib/access-control";
@@ -13,9 +12,5 @@ export default async function NuevoDashboardPage() {
     redirect("/dashboard");
   }
 
-  const accessLevels = await prisma.role.findMany({
-    orderBy: { name: "asc" },
-  });
-
-  return <NuevoDashboardClient accessLevels={accessLevels} />;
+  return <NuevoDashboardClient />;
 } 

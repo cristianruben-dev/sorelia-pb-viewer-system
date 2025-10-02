@@ -1,15 +1,18 @@
-import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { headers } from "next/headers";
+import { getSessionByToken, getSessionToken, deleteSessionCookie, type Session, type AuthUser } from "./auth";
 
-import type { UserWithRoles } from "./access-control";
-
-export async function getServerSession() {
+export async function getServerSession(): Promise<Session | null> {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers()
-    })
+    const token = await getSessionToken();
+    if (!token) return null;
+
+    const session = await getSessionByToken(token);
+
+    // Si la sesión está expirada, eliminar cookie y retornar null
+    if (!session) {
+      await deleteSessionCookie();
+      return null;
+    }
 
     return session;
   } catch (error) {
@@ -18,28 +21,32 @@ export async function getServerSession() {
   }
 }
 
-export async function getCurrentUser(): Promise<UserWithRoles> {
+export async function getCurrentUser(): Promise<AuthUser> {
   const session = await getServerSession();
 
   if (!session?.user) {
     redirect("/login");
   }
 
-  // Para obtener los roles desde la base de datos en lugar de la sesión
-  const userWithRoles = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    include: {
-      roles: {
-        include: {
-          role: true,
-        },
-      },
-    },
-  });
+  return session.user;
+}
 
-  if (!userWithRoles) {
+export async function requireAuth(): Promise<Session> {
+  const session = await getServerSession();
+
+  if (!session) {
     redirect("/login");
   }
 
-  return userWithRoles;
+  return session;
+}
+
+export async function requireAdmin(): Promise<AuthUser> {
+  const user = await getCurrentUser();
+
+  if (!user.role.includes("admin")) {
+    redirect("/dashboard");
+  }
+
+  return user;
 }

@@ -7,121 +7,95 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Usuario simplificado - todo en uno
 model User {
-  id            String   @id @default(cuid())
-  name          String?
-  email         String   @unique
-  emailVerified Boolean  @default(false)
-  image         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String // Hash de la contraseña
+  role      String   @default("user") // "admin", "user", o "admin,premium" para múltiples
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  roles    UserRole[]
-  sessions Session[]
-  accounts Account[]
+  sessions     Session[]
+  reportAccess UserReportAccess[]
+  activityLogs ActivityLog[]
 
-  @@map("user")
+  @@map("users")
 }
 
+// Sesiones activas
 model Session {
-  id                   String   @id @default(cuid())
-  expiresAt            DateTime
-  token                String   @unique
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
-  ipAddress            String?
-  userAgent            String?
-  userId               String
-  activeOrganizationId String?
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("session")
+  @@map("sessions")
 }
 
-model Account {
-  id                    String    @id @default(cuid())
-  accountId             String
-  providerId            String
-  userId                String
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
+// Logs unificados de actividad
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String // "login", "logout", "report_access", etc.
+  action    String // Descripción de la acción
+  success   Boolean? // Para login: true/false, para otros puede ser null
+  reportId  String? // Solo para acceso a reportes
+  metadata  String? // JSON con info adicional si es necesario
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  report PowerBIContent? @relation(fields: [reportId], references: [id], onDelete: SetNull)
 
-  @@map("account")
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+  @@map("activity_logs")
 }
 
-model Verification {
-  id         String   @id @default(cuid())
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  @@map("verification")
-}
-
-// Business Models
-
+// Reportes de PowerBI
 model PowerBIContent {
   id         String   @id @default(cuid())
   title      String
   iframeHtml String // HTML completo del iframe de PowerBI
-  published  Boolean  @default(true)
-  tags       String[] // Tags para organización
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  roles PowerBIContentRole[]
+  userAccess   UserReportAccess[]
+  activityLogs ActivityLog[]
 
   @@map("powerbi_contents")
 }
 
-// Tabla intermedia para la relación muchos-a-muchos entre usuarios y roles
-model UserRole {
+model UserReportAccess {
   id        String   @id @default(cuid())
   userId    String
-  roleId    String
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, roleId])
-  @@map("user_roles")
-}
-
-// Tabla intermedia para la relación muchos-a-muchos entre PowerBI content y roles
-model PowerBIContentRole {
-  id               String   @id @default(cuid())
-  powerBIContentId String
-  roleId           String
-  createdAt        DateTime @default(now())
-
-  powerBIContent PowerBIContent @relation(fields: [powerBIContentId], references: [id], onDelete: Cascade)
-  role           Role           @relation(fields: [roleId], references: [id], onDelete: Cascade)
-
-  @@unique([powerBIContentId, roleId])
-  @@map("powerbi_content_roles")
-}
-
-// Modelo completo de roles con todos los campos necesarios
-model Role {
-  id        String   @id @default(cuid())
-  name      String   @unique // FREE, PREMIUM, ADMIN, etc.
-  isAdmin   Boolean  @default(false) // Si es un rol de administrador
+  reportId  String
   createdAt DateTime @default(now())
 
-  userRoles           UserRole[]
-  powerBIContentRoles PowerBIContentRole[]
+  user   User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  report PowerBIContent @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
-  @@map("roles")
+  @@unique([userId, reportId])
+  @@map("user_report_access")
+}
+
+// Configuración del sistema
+model SystemConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique // "site_title", "site_logo", "site_favicon"
+  value     String // El valor de la configuración (texto o URL de Cloudinary)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("system_config")
 }

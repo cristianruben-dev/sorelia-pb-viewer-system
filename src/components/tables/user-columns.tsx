@@ -4,19 +4,17 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog";
-import { UserRolesPopover } from "@/components/admin/user-roles-popover";
 import { Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import type { User } from "@prisma/client";
 
-import type { UserWithRoles } from "@/lib/access-control";
+export type UserWithCounts = User & {
+  _count: {
+    sessions: number;
+  };
+};
 
-export const createUserColumns = (onRolesUpdated: () => void): ColumnDef<UserWithRoles>[] => [
+export const createUserColumns = (onRolesUpdated: () => void): ColumnDef<UserWithCounts>[] => [
   {
     accessorKey: "name",
     header: "Usuario",
@@ -31,64 +29,29 @@ export const createUserColumns = (onRolesUpdated: () => void): ColumnDef<UserWit
     },
   },
   {
-    accessorKey: "roles",
-    header: "Roles",
+    accessorKey: "role",
+    header: "Rol",
     cell: ({ row }) => {
       const user = row.original;
-      const roles = user.roles.map(ur => ur.role);
-
-      if (roles.length === 0) {
-        return (
-          <div className="flex items-center gap-2">
-            <Badge variant="outline">Sin roles</Badge>
-            <UserRolesPopover user={user} onRolesUpdated={onRolesUpdated} />
-          </div>
-        );
-      }
-
-      // Mostrar los primeros 2 roles
-      const visibleRoles = roles.slice(0, 2);
-      const remainingCount = roles.length - visibleRoles.length;
+      const isAdmin = user.role.includes("admin");
 
       return (
-        <div className="flex items-center gap-2">
-          <div className="flex flex-wrap gap-1 items-center">
-            {visibleRoles.map(role => (
-              <Badge
-                key={role.id}
-                variant={role.isAdmin ? "destructive" : "secondary"}
-              >
-                {role.name}
-              </Badge>
-            ))}
+        <Badge variant={isAdmin ? "destructive" : "secondary"}>
+          {user.role}
+        </Badge>
+      );
+    },
+  },
+  {
+    accessorKey: "active",
+    header: "Estado",
+    cell: ({ row }) => {
+      const user = row.original;
 
-            {remainingCount > 0 && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Badge variant="outline" className="cursor-help">
-                      +{remainingCount} más
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <div className="flex flex-col gap-1 p-1">
-                      {roles.slice(2).map(role => (
-                        <Badge
-                          key={role.id}
-                          variant={role.isAdmin ? "destructive" : "secondary"}
-                          className="my-1"
-                        >
-                          {role.name}
-                        </Badge>
-                      ))}
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </div>
-          <UserRolesPopover user={user} onRolesUpdated={onRolesUpdated} />
-        </div>
+      return (
+        <Badge variant={user.active ? "default" : "outline"}>
+          {user.active ? "Activo" : "Inactivo"}
+        </Badge>
       );
     },
   },

@@ -3,18 +3,19 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "sonner";
+import { getSystemConfig } from "@/lib/system-config";
 
-export const metadata: Metadata = {
-	title: "Sorelia",
-	description: "Sorelia - Visualizador de reportes Power BI",
-	icons: {
-		icon: [
-			{ url: "/favicon.png", sizes: "any" }
-		],
-	},
-	manifest: "/manifest.json",
-	viewport: "width=device-width, initial-scale=1"
-};
+export async function generateMetadata(): Promise<Metadata> {
+	const config = await getSystemConfig();
+
+	return {
+		title: config.site_title || "Sistema Visualizador",
+		description: `${config.site_title} - Visualizador de reportes Power BI`,
+		icons: {
+			icon: config.site_favicon
+		},
+	};
+}
 
 const geist = Geist({
 	subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({
 	return (
 		<html lang="es" className={`${geist.variable}`}>
 			<body className="font-sans antialiased">
+
 				<Toaster
 					position="top-right"
 					duration={3000}

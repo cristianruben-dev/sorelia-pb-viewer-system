@@ -9,7 +9,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { UserForm } from "@/components/forms/user-form";
-import { signUp } from "@/lib/auth-client";
 import { toast } from "sonner";
 
 interface UserCreateDialogProps {
@@ -28,21 +27,24 @@ export function UserCreateDialog({
   const handleSubmit = async (data: {
     name: string;
     email: string;
-    password: string;
+    password?: string;
+    role: string;
+    active: boolean;
   }) => {
     setIsLoading(true);
     try {
-      const result = await signUp.email({
-        email: data.email,
-        password: data.password,
-        name: data.name,
+      const response = await fetch('/api/admin/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
 
-      if (result.error) {
+      if (!response.ok) {
+        const error = await response.json();
         toast.error("Error al crear usuario", {
-          description: result.error.message || "No se pudo crear el usuario"
+          description: error.error || "No se pudo crear el usuario"
         });
-        throw new Error(result.error.message || "Error al crear usuario");
+        throw new Error(error.error || "Error al crear usuario");
       }
 
       toast.success("Usuario creado exitosamente", {

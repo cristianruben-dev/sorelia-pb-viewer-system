@@ -15,11 +15,6 @@ export default async function UsuariosPage() {
 
   const users = await prisma.user.findMany({
     include: {
-      roles: {
-        include: {
-          role: true,
-        },
-      },
       _count: {
         select: {
           sessions: true,

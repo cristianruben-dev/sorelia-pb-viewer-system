@@ -1,13 +1,16 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { getCurrentUser } from '@/lib/auth-server';
 import { prisma } from "@/lib/prisma";
+import { hashPassword } from '@/lib/auth';
 import { z } from 'zod';
 import { isUserAdmin } from '@/lib/access-control';
 
 const updateUserSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido').optional(),
   email: z.string().email('Email inválido').optional(),
-  roleId: z.string().optional(),
+  password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres').optional(),
+  role: z.string().optional(),
+  active: z.boolean().optional(),
 });
 
 interface RouteParams {
@@ -25,12 +28,14 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     const targetUser = await prisma.user.findUnique({
       where: { id },
-      include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        active: true,
+        createdAt: true,
+        updatedAt: true,
         _count: {
           select: {
             sessions: true,
@@ -77,7 +82,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     // Si se está actualizando el email, verificar que no existe
     if (validatedData.email && validatedData.email !== existingUser.email) {
       const emailExists = await prisma.user.findUnique({
-        where: { email: validatedData.email },
+        where: { email: validatedData.email.toLowerCase() },
       });
 
       if (emailExists) {
@@ -88,51 +93,28 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       }
     }
 
-    // Actualizar datos básicos del usuario
+    // Preparar datos de actualización
     const updateData: any = {};
     if (validatedData.name) updateData.name = validatedData.name;
-    if (validatedData.email) updateData.email = validatedData.email;
-
-    if (Object.keys(updateData).length > 0) {
-      await prisma.user.update({
-        where: { id },
-        data: updateData,
-      });
+    if (validatedData.email) updateData.email = validatedData.email.toLowerCase();
+    if (validatedData.role) updateData.role = validatedData.role;
+    if (validatedData.active !== undefined) updateData.active = validatedData.active;
+    if (validatedData.password) {
+      updateData.password = await hashPassword(validatedData.password);
     }
 
-    // Si se está actualizando el rol
-    if (validatedData.roleId) {
-      // Verificar que el rol existe
-      const role = await prisma.role.findUnique({
-        where: { id: validatedData.roleId },
-      });
-
-      if (!role) {
-        return NextResponse.json({ error: 'Rol no encontrado' }, { status: 404 });
-      }
-
-      // Eliminar roles existentes y asignar el nuevo
-      await prisma.userRole.deleteMany({
-        where: { userId: id },
-      });
-
-      await prisma.userRole.create({
-        data: {
-          userId: id,
-          roleId: validatedData.roleId,
-        },
-      });
-    }
-
-    // Obtener el usuario actualizado
-    const updatedUser = await prisma.user.findUnique({
+    // Actualizar usuario
+    const updatedUser = await prisma.user.update({
       where: { id },
-      include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
+      data: updateData,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        active: true,
+        createdAt: true,
+        updatedAt: true,
         _count: {
           select: {
             sessions: true,

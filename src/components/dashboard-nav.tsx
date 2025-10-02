@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { LogoutButton } from "@/components/logout-button";
+import { UserDropdown } from "@/components/user-dropdown";
 import { Home, Menu, Layout, LogOut } from "lucide-react";
 import {
 	DropdownMenu,
@@ -14,34 +14,25 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { authClient } from "@/lib/auth-client";
-import { toast } from "sonner";
-import type { UserWithRoles } from "@/lib/access-control";
-import Image from "next/image";
+import { signOut } from "@/lib/auth-client";
+import type { User } from "@prisma/client";
+import { SystemLogo } from "@/components/system-logo";
 
 interface DashboardNavProps {
-	user: UserWithRoles;
+	user: User;
+	systemConfig?: {
+		site_logo?: string;
+		site_title?: string;
+	};
 }
 
-export function DashboardNav({ user }: DashboardNavProps) {
+export function DashboardNav({ user, systemConfig }: DashboardNavProps) {
 	const pathname = usePathname();
-	const router = useRouter();
 
-	const userIsAdmin = user.roles.some((role) => role.role.isAdmin);
+	const userIsAdmin = user.role.includes("admin");
 
 	const handleLogout = async () => {
-		try {
-			await authClient.signOut();
-			toast.success("Sesión cerrada", {
-				description: "Has cerrado sesión correctamente",
-			});
-			router.push("/login");
-		} catch (error) {
-			console.error("Error during logout:", error);
-			toast.error("Error al cerrar sesión", {
-				description: "Ha ocurrido un error inesperado",
-			});
-		}
+		await signOut();
 	};
 
 	const navItems = [
@@ -52,12 +43,12 @@ export function DashboardNav({ user }: DashboardNavProps) {
 		},
 		...(userIsAdmin
 			? [
-					{
-						title: "Panel Admin",
-						href: "/admin/usuarios",
-						icon: Layout,
-					},
-				]
+				{
+					title: "Panel Admin",
+					href: "/admin/usuarios",
+					icon: Layout,
+				},
+			]
 			: []),
 	];
 
@@ -66,14 +57,8 @@ export function DashboardNav({ user }: DashboardNavProps) {
 			<div className="max-w-7xl mx-auto px-4">
 				<div className="flex justify-between h-20">
 					<div className="flex items-center gap-8">
-						<Image
-							src="/seguridad-gto-logo.png"
-							alt="Logo Sorelia"
-							width={200}
-							height={50}
-						/>
+						<SystemLogo />
 
-						{/* Desktop Navigation */}
 						<div className="hidden md:flex md:space-x-4">
 							{navItems.map((item) => {
 								// Para admin, consideramos activo si la ruta actual es /admin/*
@@ -101,12 +86,9 @@ export function DashboardNav({ user }: DashboardNavProps) {
 						</div>
 					</div>
 
-					{/* User Info and Logout - Desktop */}
+					{/* User Dropdown - Desktop */}
 					<div className="hidden md:flex items-center">
-						<div className="mr-4 text-sm">
-							<span className="font-medium text-gray-900">{user.name}</span>
-						</div>
-						<LogoutButton />
+						<UserDropdown user={user} />
 					</div>
 
 					{/* Mobile menu dropdown */}

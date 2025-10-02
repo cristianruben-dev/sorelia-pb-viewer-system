@@ -2,9 +2,11 @@ import { getCurrentUser } from "@/lib/auth-server";
 import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { canUserAccessReport } from "@/lib/access-control";
+import { logReportAccess } from "@/lib/report-logger";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
@@ -21,14 +23,7 @@ export default async function ReportePage({ params }: PageProps) {
 	}
 
 	const report = await prisma.powerBIContent.findUnique({
-		where: { id: resolvedParams.id, published: true },
-		include: {
-			roles: {
-				include: {
-					role: true,
-				},
-			},
-		},
+		where: { id: resolvedParams.id },
 	});
 
 	if (!report) {
@@ -36,10 +31,20 @@ export default async function ReportePage({ params }: PageProps) {
 	}
 
 	// Verificar acceso
-	const hasAccess = canUserAccessReport(user, report.roles);
+	const hasAccess = await canUserAccessReport(user, resolvedParams.id);
 	if (!hasAccess) {
 		redirect("/dashboard");
 	}
+
+	// Loggear el acceso al reporte
+	const headersList = await headers();
+	await logReportAccess(
+		user.id,
+		resolvedParams.id,
+		report.title,
+		headersList.get("x-forwarded-for") ?? undefined,
+		headersList.get("user-agent") ?? undefined
+	);
 
 	// Procesar el HTML del iframe para asegurar que ocupe todo el ancho
 	const processIframeHtml = (html: string) => {

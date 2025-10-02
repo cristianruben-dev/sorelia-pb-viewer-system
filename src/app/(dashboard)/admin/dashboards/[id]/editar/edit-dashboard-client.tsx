@@ -6,22 +6,17 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardForm } from "@/components/forms/dashboard-form";
+import { ReportUsersManager } from "@/components/admin/report-users-manager";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
-import type { PowerBIContent, Role } from "@prisma/client";
-import { type PowerBIContentWithRoles } from "@/lib/access-control";
-
-type PowerBIContentWithRole = PowerBIContent & {
-  role: Role | null;
-};
+import type { PowerBIContent } from "@prisma/client";
 
 interface EditDashboardClientProps {
-  accessLevels: Role[];
-  dashboard: PowerBIContentWithRoles;
+  dashboard: PowerBIContent;
 }
 
-export function EditDashboardClient({ dashboard, accessLevels }: EditDashboardClientProps) {
+export function EditDashboardClient({ dashboard }: EditDashboardClientProps) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -91,12 +86,17 @@ export function EditDashboardClient({ dashboard, accessLevels }: EditDashboardCl
         <CardContent>
           <DashboardForm
             dashboard={dashboard}
-            accessLevels={accessLevels}
             onSubmit={handleSubmit}
             isLoading={isLoading}
           />
         </CardContent>
       </Card>
+
+      {/* Gestión de usuarios */}
+      <ReportUsersManager
+        reportId={dashboard.id}
+        reportTitle={dashboard.title}
+      />
     </div>
   );
 } 

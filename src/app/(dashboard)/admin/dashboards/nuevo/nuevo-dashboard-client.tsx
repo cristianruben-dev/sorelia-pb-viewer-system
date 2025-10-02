@@ -8,13 +8,7 @@ import { DashboardForm } from "@/components/forms/dashboard-form";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
-import type { Role } from "@prisma/client";
-
-interface NuevoDashboardClientProps {
-  accessLevels: Role[];
-}
-
-export function NuevoDashboardClient({ accessLevels }: NuevoDashboardClientProps) {
+export function NuevoDashboardClient() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -83,7 +77,6 @@ export function NuevoDashboardClient({ accessLevels }: NuevoDashboardClientProps
         </CardHeader>
         <CardContent>
           <DashboardForm
-            accessLevels={accessLevels}
             onSubmit={handleSubmit}
             isLoading={isLoading}
           />

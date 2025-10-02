@@ -1,13 +1,21 @@
-import { createAuthClient } from "better-auth/react";
+"use client";
 
-export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_APP_URL,
-});
+export async function signIn(email: string, password: string) {
+  const response = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
 
-export const {
-  signIn,
-  signUp,
-  signOut,
-  useSession,
-  getSession,
-} = authClient; 
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "Error al iniciar sesión");
+  }
+
+  return response.json();
+}
+
+export async function signOut() {
+  await fetch("/api/auth/logout", { method: "POST" });
+  window.location.href = "/login";
+} 

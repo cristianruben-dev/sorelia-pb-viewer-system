@@ -2,31 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { authClient } from "@/lib/auth-client";
+import { signOut } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
 
 interface LogoutButtonProps {
   className?: string;
 }
 
 export function LogoutButton({ className }: LogoutButtonProps) {
-  const router = useRouter();
-
   const handleLogout = async () => {
-    try {
-      await authClient.signOut();
-      toast.success("Sesión cerrada", {
-        description: "Has cerrado sesión correctamente"
-      });
-      router.push("/login");
-    } catch (error) {
-      console.error("Error during logout:", error);
-      toast.error("Error al cerrar sesión", {
-        description: "Ha ocurrido un error inesperado"
-      });
-    }
+    await signOut();
   };
 
   return (

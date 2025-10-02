@@ -6,10 +6,7 @@ import { isUserAdmin } from "@/lib/access-control";
 
 const updateDashboardSchema = z.object({
   title: z.string().min(1, "El título es requerido").optional(),
-  tags: z.array(z.string()).optional(),
-  roleIds: z.array(z.string()).optional(),
   iframeHtml: z.string().optional(),
-  published: z.boolean().optional(),
 });
 
 interface RouteParams {
@@ -28,9 +25,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     const dashboard = await prisma.powerBIContent.findUnique({
       where: { id },
       include: {
-        roles: {
-          include: {
-            role: true,
+        _count: {
+          select: {
+            userAccess: true,
           },
         },
       },
@@ -71,44 +68,19 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ error: "Dashboard no encontrado" }, { status: 404 });
     }
 
-    // Si se están actualizando los roles, verificar que todos existen
-    if (validatedData.roleIds) {
-      const roles = await prisma.role.findMany({
-        where: { id: { in: validatedData.roleIds } },
-      });
-
-      if (roles.length !== validatedData.roleIds.length) {
-        return NextResponse.json({ error: "Uno o más roles no encontrados" }, { status: 404 });
-      }
-    }
-
     // Preparar datos para actualización
     const updateData: any = {};
 
     if (validatedData.title !== undefined) updateData.title = validatedData.title;
-    if (validatedData.tags !== undefined) updateData.tags = validatedData.tags;
     if (validatedData.iframeHtml !== undefined) updateData.iframeHtml = validatedData.iframeHtml;
-    if (validatedData.published !== undefined) updateData.published = validatedData.published;
-
-    // Si se están actualizando los roles, manejar la relación
-    if (validatedData.roleIds !== undefined) {
-      updateData.roles = {
-        // Eliminar todas las relaciones existentes
-        deleteMany: {},
-        // Crear las nuevas relaciones
-        create: validatedData.roleIds.map(roleId => ({
-          roleId,
-        })),
-      };
-    }
 
     const updatedDashboard = await prisma.powerBIContent.update({
       where: { id },
       data: updateData,
       include: {
-        roles: {
-          include: {
-            role: true,
+        _count: {
+          select: {
+            userAccess: true,
           },
         },
       },

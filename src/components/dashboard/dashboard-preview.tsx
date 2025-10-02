@@ -31,18 +31,6 @@ export function DashboardPreview({
     large: "h-64"
   };
 
-  // Debug: Log para verificar el contenido HTML
-  useEffect(() => {
-    console.log('DashboardPreview Debug:', {
-      dashboardId,
-      hasAccess,
-      hasIframeHtml: !!iframeHtml,
-      iframeHtmlLength: iframeHtml?.length || 0,
-      iframeHtmlPreview: iframeHtml?.substring(0, 200) + '...'
-    });
-  }, [dashboardId, iframeHtml, hasAccess]);
-
-  // Manejar la carga del iframe
   useEffect(() => {
     if (!iframeHtml || !hasAccess) {
       setIsLoading(false);

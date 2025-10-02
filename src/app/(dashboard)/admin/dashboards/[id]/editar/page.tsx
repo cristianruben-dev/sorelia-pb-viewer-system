@@ -18,21 +18,9 @@ export default async function EditDashboardPage({
     redirect("/admin");
   }
 
-  const [dashboard, accessLevels] = await Promise.all([
-    prisma.powerBIContent.findUnique({
-      where: { id: resolvedParams.id },
-      include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
-      },
-    }),
-    prisma.role.findMany({
-      orderBy: { name: "asc" },
-    }),
-  ]);
+  const dashboard = await prisma.powerBIContent.findUnique({
+    where: { id: resolvedParams.id },
+  });
 
   if (!dashboard) {
     notFound();
@@ -42,7 +30,6 @@ export default async function EditDashboardPage({
     <div className="space-y-6">
       <EditDashboardClient
         dashboard={dashboard}
-        accessLevels={accessLevels}
       />
     </div>
   );

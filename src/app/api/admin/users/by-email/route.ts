@@ -23,13 +23,6 @@ export async function GET(request: NextRequest) {
 
     const foundUser = await prisma.user.findUnique({
       where: { email },
-      include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
-      },
     });
 
     if (!foundUser) {

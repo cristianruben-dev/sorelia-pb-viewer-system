@@ -6,18 +6,14 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { LoginForm } from "@/components/auth/login-form";
-import Image from "next/image";
+import { SystemLogo } from "@/components/system-logo";
 
 export default function LoginPage() {
 	return (
 		<main className="p-4">
-			<Image
-				src="/seguridad-gto-logo.png"
-				alt="Logo Sorelia"
-				width={300}
-				height={100}
-				className="mb-10 mx-auto"
-			/>
+			<div className="flex items-center justify-center mb-10">
+				<SystemLogo />
+			</div>
 
 			<Card>
 				<CardHeader>

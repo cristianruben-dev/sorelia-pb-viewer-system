@@ -2,13 +2,14 @@ import { type NextRequest, NextResponse } from 'next/server';
 import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from '@/lib/auth-server';
 import { isUserAdmin } from '@/lib/access-control';
-
+import { hashPassword } from '@/lib/auth';
 import { z } from 'zod';
 
 const createUserSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),
   email: z.string().email('Email inválido'),
   password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+  role: z.string().default('user'),
 });
 
 export async function GET() {
@@ -20,12 +21,14 @@ export async function GET() {
     }
 
     const users = await prisma.user.findMany({
-      include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        active: true,
+        createdAt: true,
+        updatedAt: true,
         _count: {
           select: {
             sessions: true,
@@ -58,7 +61,7 @@ export async function POST(request: NextRequest) {
 
     // Verificar que el email no existe
     const existingUser = await prisma.user.findUnique({
-      where: { email: validatedData.email },
+      where: { email: validatedData.email.toLowerCase() },
     });
 
     if (existingUser) {
@@ -68,19 +71,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Crear usuario sin roles
+    // Hashear contraseña
+    const hashedPassword = await hashPassword(validatedData.password);
+
+    // Crear usuario
     const newUser = await prisma.user.create({
       data: {
         name: validatedData.name,
-        email: validatedData.email,
-        emailVerified: false,
+        email: validatedData.email.toLowerCase(),
+        password: hashedPassword,
+        role: validatedData.role,
       },
-      include: {
-        roles: {
-          include: {
-            role: true,
-          },
-        },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        active: true,
+        createdAt: true,
+        updatedAt: true,
         _count: {
           select: {
             sessions: true,

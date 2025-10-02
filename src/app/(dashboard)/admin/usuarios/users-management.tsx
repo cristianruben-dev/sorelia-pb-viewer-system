@@ -6,11 +6,10 @@ import { DataTable } from "@/components/ui/data-table";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 import { UserCreateDialog } from "@/components/admin/user-create-dialog";
-import { createUserColumns } from "@/components/tables/user-columns";
-import type { UserWithRoles } from "@/lib/access-control";
+import { createUserColumns, type UserWithCounts } from "@/components/tables/user-columns";
 
 interface UsersManagementProps {
-	users: UserWithRoles[];
+	users: UserWithCounts[];
 }
 
 export function UsersManagement({ users }: UsersManagementProps) {

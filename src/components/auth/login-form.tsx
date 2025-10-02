@@ -37,30 +37,18 @@ export function LoginForm() {
     setError(null);
 
     try {
-      const result = await signIn.email({
-        email: data.email,
-        password: data.password,
-        callbackURL: callbackUrl,
+      await signIn(data.email, data.password);
+
+      toast.success("¡Bienvenido!", {
+        description: "Has iniciado sesión correctamente"
       });
-
-      console.log(result);
-
-      if (result.error) {
-        setError("Credenciales incorrectas");
-        toast.error("Error al iniciar sesión", {
-          description: "Las credenciales proporcionadas son incorrectas"
-        });
-      } else {
-        toast.success("¡Bienvenido!", {
-          description: "Has iniciado sesión correctamente"
-        });
-        router.push(callbackUrl);
-      }
+      router.push(callbackUrl);
+      router.refresh();
     } catch (err) {
-      const errorMessage = "Error al iniciar sesión. Inténtalo de nuevo.";
+      const errorMessage = err instanceof Error ? err.message : "Error al iniciar sesión. Inténtalo de nuevo.";
       setError(errorMessage);
-      toast.error("Error de conexión", {
-        description: "Ha ocurrido un error inesperado. Inténtalo de nuevo."
+      toast.error("Error al iniciar sesión", {
+        description: errorMessage
       });
     } finally {
       setIsLoading(false);
