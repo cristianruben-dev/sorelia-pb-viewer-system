@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog";
+import { QuickAccessControl } from "@/components/admin/quick-access-control";
 import { Pencil, Trash2, Eye, ArrowUpDown } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -16,7 +17,8 @@ type DashboardWithCounts = PowerBIContent & {
 };
 
 export const createDashboardColumns = (
-  onDelete: () => void
+  onDelete: () => void,
+  onUpdate?: () => void
 ): ColumnDef<DashboardWithCounts>[] => [
     {
       accessorKey: "title",
@@ -49,11 +51,15 @@ export const createDashboardColumns = (
         );
       },
       cell: ({ row }) => {
-        const count = row.original._count.userAccess;
+        const dashboard = row.original;
+        const count = dashboard._count.userAccess;
         return (
-          <Badge variant="outline" className="text-xs">
-            {count} {count === 1 ? "usuario" : "usuarios"}
-          </Badge>
+          <QuickAccessControl
+            dashboardId={dashboard.id}
+            dashboardTitle={dashboard.title}
+            userCount={count}
+            onUpdate={onUpdate}
+          />
         );
       },
     },

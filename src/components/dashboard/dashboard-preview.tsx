@@ -22,7 +22,6 @@ export function DashboardPreview({
   category
 }: DashboardPreviewProps) {
   const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const sizeClasses = {
@@ -39,7 +38,7 @@ export function DashboardPreview({
 
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 2000); // Timeout después de 2 segundos
+    }, 2000);
 
     return () => clearTimeout(timer);
   }, [iframeHtml, hasAccess]);
@@ -70,7 +69,6 @@ export function DashboardPreview({
 
   // Procesamiento mejorado del HTML del iframe
   const processIframeHtml = (html: string) => {
-    // Limpiar y ajustar el HTML
     let processedHtml = html
       .replace(/width="[^"]*"/g, 'width="100%"')
       .replace(/height="[^"]*"/g, 'height="100%"')
@@ -83,18 +81,6 @@ export function DashboardPreview({
 
     return processedHtml;
   };
-
-  if (hasError) {
-    return (
-      <div className={`${sizeClasses[size]} ${className} border border-dashed rounded-lg bg-red-50 flex items-center justify-center`}>
-        <div className="text-center text-red-600">
-          <AlertCircle className="h-8 w-8 mx-auto mb-2" />
-          <p className="text-sm font-medium">Error al cargar</p>
-          <p className="text-xs">Dashboard no disponible</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={`${sizeClasses[size]} ${className} relative overflow-hidden rounded-lg border bg-white`}>
@@ -111,14 +97,12 @@ export function DashboardPreview({
       {/* Loading indicator */}
       {isLoading && (
         <div className="absolute inset-0 bg-gray-100 flex items-center justify-center z-30">
-          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"/>
         </div>
       )}
 
-      {/* Preview overlay to prevent interaction */}
       <div className="absolute inset-0 z-20 cursor-pointer bg-transparent" />
 
-      {/* Dashboard iframe container con escala mejorada */}
       <div
         ref={containerRef}
         className="w-full h-full relative"

@@ -3,24 +3,15 @@ import type { User } from "@prisma/client";
 
 export type AuthUser = User;
 
-/**
- * Verifica si un usuario es administrador
- */
 export function isUserAdmin(user: User | null): boolean {
   if (!user) return false;
   return user.role.includes("admin");
 }
 
-/**
- * Obtiene los roles de un usuario como array
- */
 export function getUserRoles(user: User): string[] {
   return user.role.split(",").map(r => r.trim());
 }
 
-/**
- * Verifica si un usuario tiene acceso a un reporte específico
- */
 export async function canUserAccessReport(user: User | null, reportId: string): Promise<boolean> {
   if (!user) return false;
 
@@ -40,9 +31,6 @@ export async function canUserAccessReport(user: User | null, reportId: string): 
   return !!access;
 }
 
-/**
- * Filtra reportes accesibles para un usuario específico
- */
 export async function filterAccessibleReports(user: User | null) {
   if (!user) return [];
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
@@ -26,7 +25,11 @@ export function DashboardsClient({ dashboards }: DashboardsClientProps) {
     router.refresh();
   };
 
-  const columns = createDashboardColumns(handleDelete);
+  const handleUpdate = () => {
+    router.refresh();
+  };
+
+  const columns = createDashboardColumns(handleDelete, handleUpdate);
 
   return (
     <div className="space-y-6">

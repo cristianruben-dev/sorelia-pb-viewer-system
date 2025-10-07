@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Checkbox } from "@/components/ui/checkbox";
 import type { PowerBIContent } from "@prisma/client";
 
 const dashboardFormSchema = z.object({
@@ -72,7 +71,6 @@ export function DashboardForm({ dashboard, onSubmit, isLoading = false }: Dashbo
           )}
         />
 
-
         <FormField
           control={form.control}
           name="iframeHtml"
@@ -87,15 +85,12 @@ export function DashboardForm({ dashboard, onSubmit, isLoading = false }: Dashbo
                   rows={5}
                 />
               </FormControl>
-              <FormDescription>
-                Código HTML del iframe de Power BI.
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <div className="flex justify-end space-x-2 pt-4 border-t">
+        <div className="flex justify-end space-x-2">
           <Button type="submit" disabled={isLoading}>
             {isLoading ? "Guardando..." : dashboard ? "Actualizar" : "Crear"}
           </Button>
