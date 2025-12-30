@@ -5,8 +5,10 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { DataTable } from "@/components/ui/data-table";
 import { createDashboardColumns } from "@/components/tables/dashboard-columns";
-import type { PowerBIContent } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { Card, CardContent } from "@/components/ui/card";
+
+import type { PowerBIContent } from "@prisma/client";
 
 type DashboardWithCounts = PowerBIContent & {
   _count: {
@@ -50,12 +52,16 @@ export function DashboardsClient({ dashboards }: DashboardsClientProps) {
       </div>
 
       {/* DataTable */}
-      <DataTable
-        columns={columns}
-        data={dashboards}
-        searchKey="title"
-        searchPlaceholder="Buscar dashboards..."
-      />
+      <Card>
+        <CardContent>
+          <DataTable
+            columns={columns}
+            data={dashboards}
+            searchKey="title"
+            searchPlaceholder="Buscar dashboards..."
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }

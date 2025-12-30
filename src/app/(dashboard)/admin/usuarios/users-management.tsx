@@ -30,6 +30,12 @@ export function UsersManagement({ users }: UsersManagementProps) {
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center justify-between">
+				<div>
+					<h2 className="text-3xl font-bold tracking-tight">Usuarios</h2>
+					<p className="text-muted-foreground">
+						Gestiona los usuarios de la aplicacion
+					</p>
+				</div>
 				<Button onClick={() => setShowCreateDialog(true)}>
 					<Plus className="mr-2 h-4 w-4" />
 					Nuevo Usuario

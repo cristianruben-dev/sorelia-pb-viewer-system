@@ -12,6 +12,8 @@ export const env = createEnv({
 		CLOUDINARY_API_SECRET: z.string(),
 		CLOUDINARY_API_KEY: z.string(),
 		CLOUDINARY_CLOUD_NAME: z.string(),
+		RESEND_API_KEY: z.string(),
+		RESEND_FROM_EMAIL: z.string().email().optional(),
 	},
 	client: {
 	},
@@ -23,6 +25,8 @@ export const env = createEnv({
 		CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
 		CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
 		CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+		RESEND_API_KEY: process.env.RESEND_API_KEY,
+		RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
 	},
 	skipValidation: !!process.env.SKIP_ENV_VALIDATION,
 	emptyStringAsUndefined: true,

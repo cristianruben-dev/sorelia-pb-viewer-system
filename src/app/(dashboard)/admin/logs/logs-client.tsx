@@ -1,22 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { DataTable } from "@/components/ui/data-table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Activity } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { logsColumns, type ActivityLog } from "@/components/tables/logs-columns";
-
-interface LogsResponse {
-  logs: ActivityLog[];
-}
+import { LogsFilters } from "@/components/logs/logs-filters";
 
 export function LogsClient() {
   const [logs, setLogs] = useState<ActivityLog[]>([]);
@@ -38,7 +26,7 @@ export function LogsClient() {
       const response = await fetch("/api/admin/logs");
       if (!response.ok) throw new Error("Error al cargar logs");
 
-      const data: LogsResponse = await response.json();
+      const data = await response.json();
       setLogs(data.logs);
       setFilteredLogs(data.logs);
     } catch (error) {
@@ -69,14 +57,9 @@ export function LogsClient() {
     setUserFilter("all");
   };
 
-  // Obtener lista única de usuarios
-  const uniqueUsers = Array.from(
-    new Map(logs.map((log) => [log.user.id, log.user])).values()
-  );
-
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex min-h-[400px] items-center justify-center">
         <p className="text-muted-foreground">Cargando logs...</p>
       </div>
     );
@@ -85,73 +68,35 @@ export function LogsClient() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Logs del Sistema</h2>
-          <p className="text-muted-foreground">
-            Historial de actividad del sistema
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Activity className="h-5 w-5 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground">
-            {filteredLogs.length} registros
-          </span>
-        </div>
+      <div>
+        <h2 className="text-3xl font-bold tracking-tight">Logs del Sistema</h2>
+        <p className="text-muted-foreground">
+          Historial de actividad del sistema
+        </p>
       </div>
 
-      {/* Filtros adicionales */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Filtros Avanzados</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Filtro por tipo */}
-            <Select value={typeFilter} onValueChange={setTypeFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Tipo de actividad" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos los tipos</SelectItem>
-                <SelectItem value="login">Inicio de Sesión</SelectItem>
-                <SelectItem value="logout">Cierre de Sesión</SelectItem>
-                <SelectItem value="report_access">Acceso a Reporte</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {/* Filtro por usuario */}
-            <Select value={userFilter} onValueChange={setUserFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Usuario" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Todos los usuarios</SelectItem>
-                {uniqueUsers.map((user) => (
-                  <SelectItem key={user.id} value={user.id}>
-                    {user.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            {/* Limpiar filtros */}
-            {(typeFilter !== "all" || userFilter !== "all") && (
-              <Button variant="outline" onClick={clearFilters}>
-                Limpiar filtros
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+      {/* Filtros */}
+      <LogsFilters
+        logs={logs}
+        typeFilter={typeFilter}
+        userFilter={userFilter}
+        filteredCount={filteredLogs.length}
+        onTypeFilterChange={setTypeFilter}
+        onUserFilterChange={setUserFilter}
+        onClearFilters={clearFilters}
+      />
 
       {/* DataTable de Logs */}
-      <DataTable
-        columns={logsColumns}
-        data={filteredLogs}
-        searchKey="action"
-        searchPlaceholder="Buscar en logs..."
-      />
+      <Card>
+        <CardContent>
+          <DataTable
+            columns={logsColumns}
+            data={filteredLogs}
+            searchKey="action"
+            searchPlaceholder="Buscar en logs..."
+          />
+        </CardContent>
+      </Card>
     </div>
   );
 }

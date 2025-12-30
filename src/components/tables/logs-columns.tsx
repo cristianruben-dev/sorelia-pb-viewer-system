@@ -4,6 +4,7 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { ArrowUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { IPAddressPopover } from "@/components/logs/ip-address-popover";
 
 interface User {
   id: string;
@@ -157,11 +158,10 @@ export const logsColumns: ColumnDef<ActivityLog>[] = [
     header: "IP",
     cell: ({ row }) => {
       const ip = row.getValue("ipAddress") as string | null;
-      return (
-        <div className="text-sm text-muted-foreground">
-          {ip || "—"}
-        </div>
-      );
+      if (!ip) {
+        return <div className="text-sm text-muted-foreground">—</div>;
+      }
+      return <IPAddressPopover ipAddress={ip} />;
     },
   },
 ];

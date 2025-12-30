@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "@/lib/auth-client";
@@ -21,7 +20,6 @@ type LoginForm = z.infer<typeof loginSchema>;
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   const callbackUrl = "/dashboard";
 
   const {
@@ -80,7 +78,15 @@ export function LoginForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Contraseña</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="password">Contraseña</Label>
+          <a
+            href="/forgot-password"
+            className="text-sm text-primary underline-offset-4 hover:underline"
+          >
+            ¿Olvidaste tu contraseña?
+          </a>
+        </div>
         <Input
           id="password"
           type="password"

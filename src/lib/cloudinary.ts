@@ -9,7 +9,7 @@ cloudinary.config({
 
 export async function uploadToCloudinary(
   file: Buffer,
-  folder: string = "sorelia-powerbi"
+  folder = "sorelia-powerbi"
 ): Promise<string> {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
