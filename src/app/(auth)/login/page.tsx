@@ -129,7 +129,7 @@ export default function LoginPage() {
 							variant="secondary"
 							disabled={isLoading}
 						>
-							{isLoading ? "Entrando..." : "Entrar"}
+							{isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
 						</Button>
 					</form>
 				</CardContent>
