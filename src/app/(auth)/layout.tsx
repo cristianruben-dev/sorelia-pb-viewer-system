@@ -11,9 +11,14 @@ export default function AuthLayout({
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between gap-4 py-4">
             <SystemLogo />
-            <h2 className="md:text-3xl text-2xl font-bold font-protest-strike text-primary">
-              METRA
-            </h2>
+            <div>
+              <h2 className="md:text-2xl text-2xl font-bold font-protest-strike text-primary">
+                METRA
+              </h2>
+              <p className="text-sm text-muted-foreground font-protest-strike">
+               MONITOREO, ESTADISTICA TENDENCIA Y REPORTERS PARA EL ANALISIS DE LA DLPC
+              </p>
+            </div>
           </div>
         </div>
       </nav>
