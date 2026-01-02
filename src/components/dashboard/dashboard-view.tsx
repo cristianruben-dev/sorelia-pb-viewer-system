@@ -1,28 +1,34 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, LayoutGrid, List, Maximize2, Minimize2, Search, Image as ImageIcon } from "lucide-react";
+import {
+  Eye,
+  LayoutGrid,
+  List,
+  Maximize2,
+  Minimize2,
+  Search,
+  ImageIcon
+} from "lucide-react";
 import { DashboardPreview } from "@/components/dashboard/dashboard-preview";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-type Report = {
-  id: string;
-  title: string;
-  iframeHtml: string;
-};
+import Link from "next/link";
+
+import type { PowerBIContent } from "@prisma/client";
 
 type ViewMode = "list" | "grid" | "gallery";
 type GridSize = "small" | "medium" | "large";
 
-interface DashboardViewProps {
-  reports: Report[];
-}
-
-export function DashboardView({ reports }: DashboardViewProps) {
+export function DashboardView({ reports }: { reports: PowerBIContent[] }) {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [gridSize, setGridSize] = useState<GridSize>("medium");
   const [searchQuery, setSearchQuery] = useState("");
@@ -293,7 +299,7 @@ export function DashboardView({ reports }: DashboardViewProps) {
             <Card
               key={report.id}
               className={cn(
-                "group overflow-hidden transition-all duration-300 hover:border-primary/50 hover:shadow-lg",
+                "group",
                 "animate-in fade-in slide-in-from-bottom-2"
               )}
               style={{
@@ -301,38 +307,40 @@ export function DashboardView({ reports }: DashboardViewProps) {
                 animationFillMode: "backwards",
               }}
             >
-              <div className="flex flex-col sm:flex-row">
-                {/* Preview Section */}
-                <div className="relative aspect-video w-full bg-muted sm:w-64 md:w-80">
-                  <DashboardPreview
-                    dashboardId={report.id}
-                    iframeHtml={report.iframeHtml}
-                    hasAccess={true}
-                    size="medium"
-                    className="h-full w-full"
-                  />
-                </div>
+              <CardContent>
+                <div className="flex flex-col sm:flex-row">
+                  {/* Preview Section */}
+                  <div className="relative aspect-video w-full bg-muted sm:w-64 md:w-80">
+                    <DashboardPreview
+                      dashboardId={report.id}
+                      iframeHtml={report.iframeHtml}
+                      hasAccess={true}
+                      size="medium"
+                      className="h-full w-full"
+                    />
+                  </div>
 
-                {/* Info Section */}
-                <div className="flex flex-1 flex-col justify-between p-4">
-                  <CardTitle className="text-base transition-colors duration-200 group-hover:text-primary md:text-lg">
-                    {report.title}
-                  </CardTitle>
+                  {/* Info Section */}
+                  <div className="flex flex-1 flex-col justify-between p-4">
+                    <CardTitle className="text-base transition-colors duration-200 group-hover:text-primary md:text-lg">
+                      {report.title}
+                    </CardTitle>
 
-                  <div className="mt-3 sm:mt-0">
-                    <Button
-                      asChild
-                      size="sm"
-                      className="w-full transition-all duration-200 group/button sm:w-auto"
-                    >
-                      <Link href={`/dashboard/reportes/${report.id}`}>
-                        <Eye className="mr-2 h-4 w-4 transition-transform duration-200 group-hover/button:scale-110" />
-                        Ver Reporte
-                      </Link>
-                    </Button>
+                    <div className="mt-3 sm:mt-0">
+                      <Button
+                        asChild
+                        size="sm"
+                        className="w-full transition-all duration-200 group/button sm:w-auto"
+                      >
+                        <Link href={`/dashboard/reportes/${report.id}`}>
+                          <Eye className="mr-2 h-4 w-4 transition-transform duration-200 group-hover/button:scale-110" />
+                          Ver Reporte
+                        </Link>
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </CardContent>
             </Card>
           ))}
         </div>
@@ -350,7 +358,7 @@ export function DashboardView({ reports }: DashboardViewProps) {
             <Card
               key={report.id}
               className={cn(
-                "group transition-all duration-300 hover:scale-[1.02]",
+                "group transition-all duration-300",
                 "animate-in fade-in slide-in-from-bottom-4"
               )}
               style={{
@@ -359,7 +367,7 @@ export function DashboardView({ reports }: DashboardViewProps) {
               }}
             >
               <CardHeader className="pb-3">
-                <CardTitle className="line-clamp-2 text-base transition-colors duration-200 group-hover:text-primary md:text-lg">
+                <CardTitle className="line-clamp-2 text-base md:text-lg">
                   {report.title}
                 </CardTitle>
 

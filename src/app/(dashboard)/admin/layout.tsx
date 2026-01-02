@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { isUserAdmin } from "@/lib/access-control";
 import { AdminNavigation } from "./admin-navigation";
 
-// Marcar como página dinámica para evitar errores con headers()
 export const dynamic = 'force-dynamic';
 
 export default async function AdminLayout({

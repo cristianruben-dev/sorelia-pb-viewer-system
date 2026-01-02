@@ -4,4 +4,4 @@ import { env } from "@/env";
 export const resend = new Resend(env.RESEND_API_KEY);
 
 export const FROM_EMAIL =
-	env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
+	env.RESEND_FROM_EMAIL || "notifications@notifications.cristianruben.com";
