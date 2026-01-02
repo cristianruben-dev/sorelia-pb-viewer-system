@@ -15,32 +15,20 @@ export type Session = {
   user: AuthUser;
 };
 
-/**
- * Hashea una contraseña
- */
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 10);
 }
 
-/**
- * Verifica una contraseña contra su hash
- */
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
   return bcrypt.compare(password, hash);
 }
 
-/**
- * Genera un token de sesión aleatorio
- */
 function generateSessionToken(): string {
   const array = new Uint8Array(32);
   crypto.getRandomValues(array);
   return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
 }
 
-/**
- * Crea una nueva sesión para un usuario
- */
 export async function createSession(userId: string, ipAddress?: string, userAgent?: string): Promise<Session> {
   const token = generateSessionToken();
   const expiresAt = new Date(Date.now() + SESSION_DURATION);
@@ -61,9 +49,6 @@ export async function createSession(userId: string, ipAddress?: string, userAgen
   return session;
 }
 
-/**
- * Obtiene una sesión por su token
- */
 export async function getSessionByToken(token: string): Promise<Session | null> {
   const session = await prisma.session.findUnique({
     where: { token },
@@ -79,16 +64,10 @@ export async function getSessionByToken(token: string): Promise<Session | null> 
   return session;
 }
 
-/**
- * Elimina una sesión
- */
 export async function deleteSession(token: string): Promise<void> {
   await prisma.session.delete({ where: { token } });
 }
 
-/**
- * Establece la cookie de sesión
- */
 export async function setSessionCookie(token: string): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE_NAME, token, {
@@ -100,25 +79,15 @@ export async function setSessionCookie(token: string): Promise<void> {
   });
 }
 
-/**
- * Elimina la cookie de sesión
- */
 export async function deleteSessionCookie(): Promise<void> {
   const cookieStore = await cookies();
   cookieStore.delete(SESSION_COOKIE_NAME);
 }
 
-/**
- * Obtiene el token de sesión de las cookies
- */
 export async function getSessionToken(): Promise<string | null> {
   const cookieStore = await cookies();
   return cookieStore.get(SESSION_COOKIE_NAME)?.value ?? null;
 }
-
-/**
- * Registra un intento de inicio de sesión
- */
 export async function logLoginAttempt(
   userId: string,
   success: boolean,

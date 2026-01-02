@@ -27,24 +27,6 @@ export interface ActivityLog {
   } | null;
 }
 
-const getTypeLabel = (type: string) => {
-  const labels: Record<string, string> = {
-    login: "Inicio de Sesión",
-    logout: "Cierre de Sesión",
-    report_access: "Acceso a Reporte",
-  };
-  return labels[type] || type;
-};
-
-const getTypeBadgeVariant = (type: string) => {
-  const variants: Record<string, "default" | "secondary" | "outline"> = {
-    login: "default",
-    logout: "secondary",
-    report_access: "outline",
-  };
-  return variants[type] || "outline";
-};
-
 export const logsColumns: ColumnDef<ActivityLog>[] = [
   {
     accessorKey: "createdAt",
@@ -110,8 +92,8 @@ export const logsColumns: ColumnDef<ActivityLog>[] = [
     cell: ({ row }) => {
       const type = row.getValue("type") as string;
       return (
-        <Badge variant={getTypeBadgeVariant(type)}>
-          {getTypeLabel(type)}
+        <Badge variant='outline'>
+          {type}
         </Badge>
       );
     },

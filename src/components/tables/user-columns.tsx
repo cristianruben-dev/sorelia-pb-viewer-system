@@ -1,11 +1,12 @@
 "use client";
 
-import type { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DeleteConfirmationDialog } from "@/components/ui/delete-confirmation-dialog";
 import { Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+
+import type { ColumnDef } from "@tanstack/react-table";
 import type { User } from "@prisma/client";
 
 export type UserWithCounts = User & {

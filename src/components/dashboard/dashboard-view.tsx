@@ -109,7 +109,7 @@ export function DashboardView({ reports }: DashboardViewProps) {
 
         {/* View Controls */}
         <Card>
-          <CardContent className="p-3 md:p-4">
+          <CardContent>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                 <span className="text-sm font-medium text-muted-foreground">
@@ -122,7 +122,6 @@ export function DashboardView({ reports }: DashboardViewProps) {
                     onClick={() => setViewMode("grid")}
                     className={cn(
                       "flex-1 transition-all duration-200 sm:flex-none",
-                      viewMode === "grid" && "shadow-sm"
                     )}
                   >
                     <LayoutGrid className="h-4 w-4 sm:mr-2" />
@@ -134,7 +133,6 @@ export function DashboardView({ reports }: DashboardViewProps) {
                     onClick={() => setViewMode("list")}
                     className={cn(
                       "flex-1 transition-all duration-200 sm:flex-none",
-                      viewMode === "list" && "shadow-sm"
                     )}
                   >
                     <List className="h-4 w-4 sm:mr-2" />
@@ -146,7 +144,6 @@ export function DashboardView({ reports }: DashboardViewProps) {
                     onClick={() => setViewMode("gallery")}
                     className={cn(
                       "flex-1 transition-all duration-200 sm:flex-none",
-                      viewMode === "gallery" && "shadow-sm"
                     )}
                   >
                     <ImageIcon className="h-4 w-4 sm:mr-2" />
@@ -168,7 +165,6 @@ export function DashboardView({ reports }: DashboardViewProps) {
                       onClick={() => setGridSize("small")}
                       className={cn(
                         "transition-all duration-200",
-                        gridSize === "small" && "shadow-sm"
                       )}
                       title="Pequeño (4 columnas)"
                     >
@@ -180,7 +176,6 @@ export function DashboardView({ reports }: DashboardViewProps) {
                       onClick={() => setGridSize("medium")}
                       className={cn(
                         "transition-all duration-200",
-                        gridSize === "medium" && "shadow-sm"
                       )}
                       title="Mediano (3 columnas)"
                     >
@@ -261,8 +256,8 @@ export function DashboardView({ reports }: DashboardViewProps) {
                   className={cn(
                     "group relative aspect-video overflow-hidden rounded-lg border-2 transition-all duration-200",
                     selectedGalleryIndex === index
-                      ? "border-primary shadow-lg"
-                      : "border-transparent hover:border-primary/50 hover:shadow-md"
+                      ? "border-primary"
+                      : "border-transparent"
                   )}
                 >
                   <div className="h-full w-full bg-muted">
@@ -328,7 +323,7 @@ export function DashboardView({ reports }: DashboardViewProps) {
                     <Button
                       asChild
                       size="sm"
-                      className="w-full transition-all duration-200 hover:shadow-md group/button sm:w-auto"
+                      className="w-full transition-all duration-200 group/button sm:w-auto"
                     >
                       <Link href={`/dashboard/reportes/${report.id}`}>
                         <Eye className="mr-2 h-4 w-4 transition-transform duration-200 group-hover/button:scale-110" />
@@ -355,7 +350,7 @@ export function DashboardView({ reports }: DashboardViewProps) {
             <Card
               key={report.id}
               className={cn(
-                "group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl",
+                "group transition-all duration-300 hover:scale-[1.02]",
                 "animate-in fade-in slide-in-from-bottom-4"
               )}
               style={{
@@ -369,7 +364,7 @@ export function DashboardView({ reports }: DashboardViewProps) {
                 </CardTitle>
 
                 {/* Dashboard Preview */}
-                <div className="mt-3 overflow-hidden rounded-md transition-all duration-300 group-hover:shadow-lg">
+                <div className="mt-3 overflow-hidden rounded-md transition-all duration-300">
                   <DashboardPreview
                     dashboardId={report.id}
                     iframeHtml={report.iframeHtml}
@@ -380,11 +375,11 @@ export function DashboardView({ reports }: DashboardViewProps) {
                 </div>
               </CardHeader>
 
-              <CardContent className="pt-0">
+              <CardContent>
                 <Button
                   asChild
                   size="sm"
-                  className="w-full transition-all duration-200 hover:shadow-md group/button"
+                  className="w-full transition-all duration-200"
                 >
                   <Link href={`/dashboard/reportes/${report.id}`}>
                     <Eye className="mr-2 h-4 w-4 transition-transform duration-200 group-hover/button:scale-110" />

@@ -1,8 +1,5 @@
 import { prisma } from "./prisma";
 
-/**
- * Registra el acceso de un usuario a un reporte
- */
 export async function logReportAccess(
   userId: string,
   reportId: string,

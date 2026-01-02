@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { UserDropdown } from "@/components/user-dropdown";
@@ -15,18 +16,11 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "@/lib/auth-client";
-import type { User } from "@prisma/client";
 import { SystemLogo } from "@/components/system-logo";
 
-interface DashboardNavProps {
-	user: User;
-	systemConfig?: {
-		site_logo?: string;
-		site_title?: string;
-	};
-}
+import type { User } from "@prisma/client";
 
-export function DashboardNav({ user, systemConfig }: DashboardNavProps) {
+export function DashboardNav({ user }: { user: User }) {
 	const pathname = usePathname();
 
 	const userIsAdmin = user.role.includes("admin");

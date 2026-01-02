@@ -3,11 +3,19 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
 import { DashboardForm } from "@/components/forms/dashboard-form";
 import { ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+
 import Link from "next/link";
+
 export function NuevoDashboardClient() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();

@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { resend, FROM_EMAIL } from "@/lib/resend";
 import PasswordResetEmail from "@/components/emails/password-reset-email";
 
-// Generate a 6-digit OTP code
 function generateOTP(): string {
 	return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -16,13 +15,11 @@ export async function POST(request: NextRequest) {
 			return NextResponse.json({ error: "Email is required" }, { status: 400 });
 		}
 
-		// Check if user exists
 		const user = await prisma.user.findUnique({
 			where: { email: email.toLowerCase() },
 		});
 
 		if (!user) {
-			// Don't reveal if email exists or not for security
 			return NextResponse.json(
 				{ message: "If the email exists, a reset code has been sent" },
 				{ status: 200 },

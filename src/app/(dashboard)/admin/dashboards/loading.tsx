@@ -15,7 +15,7 @@ export default function DashboardsLoading() {
 
       {/* Tabla de dashboards */}
       <Card>
-        <CardContent className="p-0">
+        <CardContent>
           <div className="p-4 space-y-4">
             {/* Barra de búsqueda */}
             <Skeleton className="h-10 w-full max-w-sm" />

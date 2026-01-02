@@ -26,11 +26,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { UserSettingsDialog } from "./user-settings-dialog";
 
-interface UserDropdownProps {
-  user: User;
-}
-
-export function UserDropdown({ user }: UserDropdownProps) {
+export function UserDropdown({ user }: { user: User }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
@@ -89,7 +85,6 @@ export function UserDropdown({ user }: UserDropdownProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Confirmación de cierre de sesión */}
       <AlertDialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
