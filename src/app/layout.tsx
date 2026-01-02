@@ -9,8 +9,8 @@ export async function generateMetadata(): Promise<Metadata> {
 	const config = await getSystemConfig();
 
 	return {
-		title: config.site_title || "Sistema Visualizador",
-		description: `${config.site_title} - Visualizador de reportes Power BI`,
+		title: "METRA",
+		description: "METRA - Visualizador BI",
 		icons: {
 			icon: config.site_favicon
 		},
