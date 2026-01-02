@@ -98,7 +98,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="p-4">
-      <Card className="w-full max-w-md">
+      <Card className="shadow-2xl">
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Nueva Contraseña</CardTitle>
           <CardDescription>
@@ -183,6 +183,7 @@ export default function ResetPasswordPage() {
             <Button
               type="submit"
               className="w-full"
+              variant="secondary"
               disabled={isLoading}
             >
               {isLoading ? (

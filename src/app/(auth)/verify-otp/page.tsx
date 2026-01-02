@@ -126,7 +126,7 @@ export default function VerifyOTPPage() {
 
   return (
     <div className="p-4">
-      <Card className="w-full max-w-md">
+      <Card className="shadow-2xl">
         <CardHeader className="space-y-1">
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl font-bold">Verificar Código</CardTitle>

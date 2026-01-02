@@ -13,10 +13,7 @@ import {
   Eye,
   LayoutGrid,
   List,
-  Maximize2,
-  Minimize2,
   Search,
-  ImageIcon
 } from "lucide-react";
 import { DashboardPreview } from "@/components/dashboard/dashboard-preview";
 import { cn } from "@/lib/utils";
@@ -30,7 +27,6 @@ type GridSize = "small" | "medium" | "large";
 
 export function DashboardView({ reports }: { reports: PowerBIContent[] }) {
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
-  const [gridSize, setGridSize] = useState<GridSize>("medium");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
@@ -39,19 +35,16 @@ export function DashboardView({ reports }: { reports: PowerBIContent[] }) {
   useEffect(() => {
     setMounted(true);
     const savedViewMode = localStorage.getItem("dashboard-view-mode") as ViewMode;
-    const savedGridSize = localStorage.getItem("dashboard-grid-size") as GridSize;
 
     if (savedViewMode) setViewMode(savedViewMode);
-    if (savedGridSize) setGridSize(savedGridSize);
   }, []);
 
   // Save preferences to localStorage
   useEffect(() => {
     if (mounted) {
       localStorage.setItem("dashboard-view-mode", viewMode);
-      localStorage.setItem("dashboard-grid-size", gridSize);
     }
-  }, [viewMode, gridSize, mounted]);
+  }, [viewMode, mounted]);
 
 
   // Filter reports based on search query
@@ -64,38 +57,6 @@ export function DashboardView({ reports }: { reports: PowerBIContent[] }) {
     );
   }, [reports, searchQuery]);
 
-  const getGridColumns = () => {
-    if (viewMode === "list" || viewMode === "gallery") return "grid-cols-1";
-
-    switch (gridSize) {
-      case "small":
-        return "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
-      case "medium":
-        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
-      case "large":
-        return "grid-cols-1 md:grid-cols-2";
-      default:
-        return "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
-    }
-  };
-
-  const getPreviewSize = () => {
-    if (viewMode === "list") return "medium";
-    if (viewMode === "gallery") return "large";
-
-    switch (gridSize) {
-      case "small":
-        return "small";
-      case "medium":
-        return "medium";
-      case "large":
-        return "large";
-      default:
-        return "medium";
-    }
-  };
-
-  const selectedReport = filteredReports[selectedGalleryIndex];
 
   return (
     <div className="space-y-4 md:space-y-6">
@@ -144,64 +105,8 @@ export function DashboardView({ reports }: { reports: PowerBIContent[] }) {
                     <List className="h-4 w-4 sm:mr-2" />
                     <span className="hidden sm:inline">Lista</span>
                   </Button>
-                  <Button
-                    variant={viewMode === "gallery" ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setViewMode("gallery")}
-                    className={cn(
-                      "flex-1 transition-all duration-200 sm:flex-none",
-                    )}
-                  >
-                    <ImageIcon className="h-4 w-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Galería</span>
-                  </Button>
                 </div>
               </div>
-
-              {/* Grid Size Controls - Only show in grid mode */}
-              {viewMode === "grid" && (
-                <div className="flex items-center gap-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    Tamaño:
-                  </span>
-                  <div className="flex items-center gap-1 rounded-md bg-muted p-1">
-                    <Button
-                      variant={gridSize === "small" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setGridSize("small")}
-                      className={cn(
-                        "transition-all duration-200",
-                      )}
-                      title="Pequeño (4 columnas)"
-                    >
-                      <Minimize2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant={gridSize === "medium" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setGridSize("medium")}
-                      className={cn(
-                        "transition-all duration-200",
-                      )}
-                      title="Mediano (3 columnas)"
-                    >
-                      <LayoutGrid className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant={gridSize === "large" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setGridSize("large")}
-                      className={cn(
-                        "transition-all duration-200",
-                        gridSize === "large" && "shadow-sm"
-                      )}
-                      title="Grande (2 columnas)"
-                    >
-                      <Maximize2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              )}
             </div>
           </CardContent>
         </Card>
@@ -222,74 +127,6 @@ export function DashboardView({ reports }: { reports: PowerBIContent[] }) {
             No se encontraron tableros que coincidan con &quot;{searchQuery}&quot;
           </CardContent>
         </Card>
-      )}
-
-      {/* Gallery View */}
-      {viewMode === "gallery" && filteredReports.length > 0 && selectedReport && (
-        <div className="space-y-4">
-          {/* Main Preview */}
-          <Card className="overflow-hidden">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-xl md:text-2xl">{selectedReport?.title}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 p-4 md:p-6">
-              <div className="aspect-video w-full overflow-hidden rounded-lg bg-muted">
-                <DashboardPreview
-                  dashboardId={selectedReport?.id || ""}
-                  iframeHtml={selectedReport?.iframeHtml || ""}
-                  hasAccess={true}
-                  size="large"
-                  className="h-full w-full"
-                />
-              </div>
-              <Button asChild className="w-full" size="lg">
-                <Link href={`/dashboard/reportes/${selectedReport?.id}`}>
-                  <Eye className="mr-2 h-5 w-5" />
-                  Ver Reporte Completo
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Thumbnails */}
-          {filteredReports.length > 1 && (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-              {filteredReports.map((report, index) => (
-                <button
-                  key={report.id}
-                  type="button"
-                  onClick={() => setSelectedGalleryIndex(index)}
-                  className={cn(
-                    "group relative aspect-video overflow-hidden rounded-lg border-2 transition-all duration-200",
-                    selectedGalleryIndex === index
-                      ? "border-primary"
-                      : "border-transparent"
-                  )}
-                >
-                  <div className="h-full w-full bg-muted">
-                    <DashboardPreview
-                      dashboardId={report.id}
-                      iframeHtml={report.iframeHtml}
-                      hasAccess={true}
-                      size="small"
-                      className="h-full w-full"
-                    />
-                  </div>
-                  <div
-                    className={cn(
-                      "absolute inset-0 flex items-center justify-center bg-black/60 p-2 transition-opacity",
-                      selectedGalleryIndex === index ? "opacity-0" : "opacity-0 group-hover:opacity-100"
-                    )}
-                  >
-                    <p className="line-clamp-2 text-center text-xs font-medium text-white">
-                      {report.title}
-                    </p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
       )}
 
       {/* List View - Compact */}
@@ -351,7 +188,7 @@ export function DashboardView({ reports }: { reports: PowerBIContent[] }) {
         <div
           className={cn(
             "grid gap-4 transition-all duration-500 ease-in-out md:gap-6",
-            getGridColumns()
+            "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           )}
         >
           {filteredReports.map((report, index) => (
@@ -377,7 +214,7 @@ export function DashboardView({ reports }: { reports: PowerBIContent[] }) {
                     dashboardId={report.id}
                     iframeHtml={report.iframeHtml}
                     hasAccess={true}
-                    size={getPreviewSize()}
+                    size="medium"
                     className="w-full"
                   />
                 </div>

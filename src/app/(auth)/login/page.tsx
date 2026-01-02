@@ -66,13 +66,13 @@ export default function LoginPage() {
 
 	return (
 		<main className="p-4">
-			<Card>
+			<Card className="shadow-2xl">
 				<CardHeader>
-					<CardTitle className="text-2xl font-bold text-primary">
-						Iniciar Sesión
+					<CardTitle className="font-bold text-primary">
+						Entrar
 					</CardTitle>
 					<CardDescription className="text-muted-foreground">
-						Ingresa tus credenciales para acceder a tu cuenta
+						Inicia sesión para acceder a los reportes BI
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
@@ -100,12 +100,7 @@ export default function LoginPage() {
 						<div className="space-y-2">
 							<div className="flex items-center justify-between">
 								<Label htmlFor="password">Contraseña</Label>
-								<a
-									href="/forgot-password"
-									className="text-sm text-primary underline-offset-4 hover:underline"
-								>
-									¿Olvidaste tu contraseña?
-								</a>
+
 							</div>
 							<Input
 								id="password"
@@ -119,12 +114,22 @@ export default function LoginPage() {
 							)}
 						</div>
 
+						<div className="flex items-center justify-end">
+							<a
+								href="/forgot-password"
+								className="text-sm text-primary underline-offset-4 underline"
+							>
+								¿Olvidaste tu contraseña?
+							</a>
+						</div>
+
 						<Button
 							type="submit"
 							className="w-full"
+							variant="secondary"
 							disabled={isLoading}
 						>
-							{isLoading ? "Iniciando sesión..." : "Iniciar Sesión"}
+							{isLoading ? "Entrando..." : "Entrar"}
 						</Button>
 					</form>
 				</CardContent>

@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Protest_Strike, Google_Sans_Flex } from "next/font/google";
 import { Toaster } from "sonner";
 import { getSystemConfig } from "@/lib/system-config";
 
@@ -17,16 +17,22 @@ export async function generateMetadata(): Promise<Metadata> {
 	};
 }
 
-const geist = Geist({
+const protest_strike = Protest_Strike({
+	weight: ["400"],
 	subsets: ["latin"],
-	variable: "--font-geist-sans",
+	variable: "--font-protest-strike",
+});
+
+const google_sans_flex = Google_Sans_Flex({
+	subsets: ["latin"],
+	variable: "--font-google-sans-flex",
 });
 
 export default function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
-		<html lang="es" className={`${geist.variable}`}>
+		<html lang="es" className={`${protest_strike.variable} ${google_sans_flex.variable}`}>
 			<body className="font-sans antialiased">
 
 				<Toaster

@@ -49,16 +49,9 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-2xl font-bold">Olvidé mi contraseña</CardTitle>
-            <Link href="/login">
-              <Button variant="ghost" size="icon">
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
+      <Card className="w-full shadow-2xl">
+        <CardHeader>
+          <CardTitle className="text-2xl font-bold">Olvidé mi contraseña</CardTitle>
           <CardDescription>
             Ingresa tu correo electrónico y te enviaremos un código de verificación
           </CardDescription>
@@ -91,6 +84,7 @@ export default function ForgotPasswordPage() {
             <Button
               type="submit"
               className="w-full"
+              variant="secondary"
               disabled={isLoading}
             >
               {isLoading && (
