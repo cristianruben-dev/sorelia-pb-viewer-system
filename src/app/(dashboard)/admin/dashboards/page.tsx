@@ -30,7 +30,7 @@ export default async function DashboardsAdminPage() {
     return (
       <Card>
         <CardContent>
-          <div className="flex items-center justify-center h-full font-protest-strike">
+          <div className="flex items-center justify-center h-full font-vollkorn font-bold">
             <h2>
               No hay dashboards
             </h2>
