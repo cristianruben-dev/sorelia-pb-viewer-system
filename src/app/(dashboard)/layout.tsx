@@ -17,7 +17,7 @@ export default async function DashboardLayout({ children }: DashboardLayoutProps
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-[#f7f8fa]">
       <DashboardNav user={user} />
 
       <main className="flex-1 overflow-y-auto p-4 w-full max-w-7xl mx-auto">

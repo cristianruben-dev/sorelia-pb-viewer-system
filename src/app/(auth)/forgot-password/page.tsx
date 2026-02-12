@@ -49,9 +49,9 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="p-4">
-      <Card className="w-full shadow-2xl">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Olvidé mi contraseña</CardTitle>
+      <Card className="w-full">
+        <CardHeader className="text-center">
+          <CardTitle className="font-bold text-primary">OLVIDÉ MI CONTRASEÑA</CardTitle>
           <CardDescription>
             Ingresa tu correo electrónico y te enviaremos un código de verificación
           </CardDescription>
@@ -65,7 +65,7 @@ export default function ForgotPasswordPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="tu@email.com"
+                  placeholder="Ingrese su correo electrónico"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -83,8 +83,8 @@ export default function ForgotPasswordPage() {
 
             <Button
               type="submit"
-              className="w-full"
-              variant="secondary"
+              className="w-full py-6 mt-6"
+              variant="default"
               disabled={isLoading}
             >
               {isLoading && (

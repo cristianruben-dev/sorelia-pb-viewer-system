@@ -5,30 +5,20 @@ import { Badge } from "@/components/ui/badge";
 import { BarChart3, Lock, AlertCircle } from "lucide-react";
 
 interface DashboardPreviewProps {
-  dashboardId: string;
   iframeHtml?: string;
   hasAccess: boolean;
-  size?: "small" | "medium" | "large";
   className?: string;
   category?: string;
 }
 
 export function DashboardPreview({
-  dashboardId,
   iframeHtml,
   hasAccess,
-  size = "medium",
   className = "",
   category
 }: DashboardPreviewProps) {
   const [isLoading, setIsLoading] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const sizeClasses = {
-    small: "h-32",
-    medium: "h-48",
-    large: "h-64"
-  };
 
   useEffect(() => {
     if (!iframeHtml || !hasAccess) {
@@ -45,7 +35,7 @@ export function DashboardPreview({
 
   if (!hasAccess) {
     return (
-      <div className={`${sizeClasses[size]} ${className} border border-dashed rounded-lg bg-gray-50 flex items-center justify-center relative overflow-hidden`}>
+      <div className={`h-48 ${className} border border-dashed rounded-lg bg-gray-50 flex items-center justify-center relative overflow-hidden`}>
         <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
         <div className="relative text-center text-muted-foreground">
           <Lock className="h-8 w-8 mx-auto mb-2 opacity-50" />
@@ -58,7 +48,7 @@ export function DashboardPreview({
 
   if (!iframeHtml) {
     return (
-      <div className={`${sizeClasses[size]} ${className} border border-dashed rounded-lg bg-gray-50 flex items-center justify-center`}>
+      <div className={`h-48 ${className} border border-dashed rounded-lg bg-gray-50 flex items-center justify-center`}>
         <div className="text-center text-muted-foreground">
           <BarChart3 className="h-8 w-8 mx-auto mb-2 opacity-50" />
           <p className="text-sm">En configuración</p>
@@ -83,7 +73,7 @@ export function DashboardPreview({
   };
 
   return (
-    <div className={`${sizeClasses[size]} ${className} relative overflow-hidden rounded-lg border bg-white`}>
+    <div className={`h-48 ${className} relative overflow-hidden rounded-lg border bg-white`}>
       {/* Category badge */}
       {category && (
         <Badge

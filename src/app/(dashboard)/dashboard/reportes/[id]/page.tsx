@@ -1,12 +1,12 @@
-import { getCurrentUser } from "@/lib/auth-server";
-import { redirect, notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
-import { canUserAccessReport } from "@/lib/access-control";
-import { logReportAccess } from "@/lib/report-logger";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { canUserAccessReport } from "@/lib/access-control";
+import { getCurrentUser } from "@/lib/auth-server";
+import { prisma } from "@/lib/prisma";
+import { logReportAccess } from "@/lib/report-logger";
+import { ArrowLeft, ChevronLeft } from "lucide-react";
 import { headers } from "next/headers";
+import Link from "next/link";
+import { notFound, redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +43,7 @@ export default async function ReportePage({ params }: PageProps) {
 		resolvedParams.id,
 		report.title,
 		headersList.get("x-forwarded-for") ?? undefined,
-		headersList.get("user-agent") ?? undefined
+		headersList.get("user-agent") ?? undefined,
 	);
 
 	// Procesar el HTML del iframe para asegurar que ocupe todo el ancho
@@ -64,18 +64,15 @@ export default async function ReportePage({ params }: PageProps) {
 	return (
 		<div className="space-y-6">
 			{/* Header */}
-			<div className="flex items-center justify-between">
-				<div className="flex items-center space-x-4">
-					<Button variant="ghost" size="sm" asChild>
-						<Link href="/dashboard">
-							<ArrowLeft className="h-4 w-4 mr-2" />
-							Volver
-						</Link>
-					</Button>
 
-					<h1 className="text-2xl font-bold">{report.title}</h1>
-				</div>
-			</div>
+			<Link href="/dashboard" className="flex items-center gap-2 font-bold mb-4">
+				<ChevronLeft className="h-4 w-4 stroke-2" />
+				Volver
+			</Link>
+
+			<h1 className="text-2xl font-bold font-vollkorn text-primary">
+				{report.title}
+			</h1>
 
 			{/* Reporte */}
 			<div className="border rounded-lg overflow-hidden bg-white w-full">

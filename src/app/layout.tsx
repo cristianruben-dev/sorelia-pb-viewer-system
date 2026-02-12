@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 
 import type { Metadata } from "next";
-import { Google_Sans_Flex, Vollkorn } from "next/font/google";
+import { Google_Sans_Flex, Protest_Strike } from "next/font/google";
 import { Toaster } from "sonner";
 import { getSystemConfig } from "@/lib/system-config";
 
@@ -22,17 +22,16 @@ const google_sans_flex = Google_Sans_Flex({
 	variable: "--font-google-sans-flex",
 });
 
-const vollkorn = Vollkorn({
-	subsets: ["latin"],
+const protest_strike = Protest_Strike({
 	variable: "--font-vollkorn",
-	weight: ["400", "700", "900"],
+	weight: "400",
 });
 
 export default function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
-		<html lang="es" className={`${google_sans_flex.variable} ${vollkorn.variable}`}>
+		<html lang="es" className={`${google_sans_flex.variable} ${protest_strike.variable}`}>
 			<body className="font-sans antialiased">
 				<Toaster
 					position="top-right"

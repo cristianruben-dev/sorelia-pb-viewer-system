@@ -22,7 +22,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "@/lib/auth-client";
 import type { User } from "@prisma/client";
-import { ChevronDown, LayoutDashboard, LogOut, Settings } from "lucide-react";
+import {
+	ChevronDown,
+	LayoutDashboard,
+	LogOut,
+	Settings,
+	UserIcon,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { UserSettingsDialog } from "./user-settings-dialog";
@@ -55,12 +61,10 @@ export function UserDropdown({ user }: { user: User }) {
 				<DropdownMenuTrigger asChild>
 					<Button
 						variant="ghost"
-						className="flex items-center gap-2 border border-border p-6"
+						className="flex items-center gap-2"
 					>
-						<Avatar className="h-8 w-8">
-							<AvatarFallback className="bg-blue-600 text-white text-xs">
-								{getInitials(user.name)}
-							</AvatarFallback>
+						<Avatar className="h-8 w-8 flex items-center justify-center bg-primary">
+							<UserIcon className="size-5 text-white" />
 						</Avatar>
 						<div className="hidden md:flex md:flex-col md:items-start md:text-left">
 							<span className="text-sm font-medium">{user.name}</span>
