@@ -10,7 +10,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
 	DropdownMenu,
@@ -40,15 +40,6 @@ export function UserDropdown({ user }: { user: User }) {
 	const userIsAdmin = user.role.includes("admin");
 
 	const router = useRouter();
-
-	const getInitials = (name: string) => {
-		return name
-			.split(" ")
-			.map((n) => n[0])
-			.join("")
-			.toUpperCase()
-			.slice(0, 2);
-	};
 
 	const handleLogout = async () => {
 		setShowLogoutConfirm(false);

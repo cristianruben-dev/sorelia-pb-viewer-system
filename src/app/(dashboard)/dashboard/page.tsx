@@ -10,9 +10,24 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export default async function DashboardPage() {
+interface DashboardPageProps {
+	searchParams: Promise<{ search?: string }>;
+}
+
+export default async function DashboardPage({
+	searchParams,
+}: DashboardPageProps) {
+	const resolvedSearchParams = await searchParams;
+	const searchQuery = resolvedSearchParams.search?.toLowerCase();
+
 	const user = await getCurrentUser();
-	const reports = await filterAccessibleReports(user);
+	let reports = await filterAccessibleReports(user);
+
+	if (searchQuery && reports) {
+		reports = reports.filter((report) =>
+			report.title.toLowerCase().includes(searchQuery),
+		);
+	}
 
 	if (!reports || reports.length === 0) {
 		return (

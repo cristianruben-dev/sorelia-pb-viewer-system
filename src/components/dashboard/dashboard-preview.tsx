@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Lock, AlertCircle } from "lucide-react";
+import { BarChart3, Lock } from "lucide-react";
 
 interface DashboardPreviewProps {
   iframeHtml?: string;

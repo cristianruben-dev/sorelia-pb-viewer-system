@@ -63,13 +63,6 @@ export default async function ReportePage({ params }: PageProps) {
 
 	return (
 		<div className="space-y-6">
-			{/* Header */}
-
-			<Link href="/dashboard" className="flex items-center gap-2 font-bold mb-4">
-				<ChevronLeft className="h-4 w-4 stroke-2" />
-				Volver
-			</Link>
-
 			<h1 className="text-2xl font-bold font-vollkorn text-primary">
 				{report.title}
 			</h1>
