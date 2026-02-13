@@ -74,7 +74,7 @@ export default function LoginPage() {
 						INICIAR SESIÓN
 					</CardTitle>
 					<CardDescription className="text-muted-foreground">
-						Ingresa tus credenciales para acceder a los reportes BI
+						Ingresa tus credenciales para acceder
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
