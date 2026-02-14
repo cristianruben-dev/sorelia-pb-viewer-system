@@ -1,11 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { canUserAccessReport } from "@/lib/access-control";
 import { getCurrentUser } from "@/lib/auth-server";
 import { prisma } from "@/lib/prisma";
 import { logReportAccess } from "@/lib/report-logger";
-import { ArrowLeft, ChevronLeft } from "lucide-react";
 import { headers } from "next/headers";
-import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +10,25 @@ export const dynamic = "force-dynamic";
 interface PageProps {
 	params: Promise<{ id: string }>;
 }
+
+export const generateMetadata = async ({ params }: PageProps) => {
+	const resolvedParams = await params;
+	const report = await prisma.powerBIContent.findUnique({
+		where: { id: resolvedParams.id },
+	});
+
+	if (!report) {
+		return {
+			title: "Reporte no encontrado",
+			description: "Reporte no encontrado",
+		};
+	}
+
+	return {
+		title: report.title,
+		description: report.title,
+	};
+};
 
 export default async function ReportePage({ params }: PageProps) {
 	const resolvedParams = await params;
