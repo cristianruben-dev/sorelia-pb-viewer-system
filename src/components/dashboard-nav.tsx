@@ -50,10 +50,10 @@ export function DashboardNav({ user }: { user: User }) {
 						<div className="w-px h-10 bg-primary" />
 						<div>
 							<p className="text-xs text-primary font-bold leading-tight max-w-[280px]">
-								MONITOREO, ESTADISTICA TENDENCIA Y
+								MONITOREO, ESTADÍSTICA TENDENCIA Y
 							</p>
 							<p className="text-xs text-primary font-bold leading-tight max-w-[280px]">
-								REPORTES PARA EL ANALISIS DE LA DLPC
+								REPORTES PARA EL ANÁLISIS DE LA DLPC
 							</p>
 						</div>
 					</div>

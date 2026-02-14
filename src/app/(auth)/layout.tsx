@@ -23,7 +23,7 @@ export default function AuthLayout({
 							<h2 className="text-sm text-primary font-bold">METRA</h2>
 							<div className="w-px h-10 bg-primary" />
 							<p className="text-xs text-primary font-bold leading-tight max-w-[280px]">
-								MONITOREO, ESTADISTICA TENDENCIA Y REPORTES PARA EL ANALISIS DE
+								MONITOREO, ESTADÍSTICA TENDENCIA Y REPORTES PARA EL ANÁLISIS DE
 								LA DLPC
 							</p>
 						</div>
