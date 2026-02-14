@@ -27,8 +27,7 @@ export default async function DashboardLayout({
 			</main>
 
 			<footer className="absolute bottom-0 w-full bg-white py-4 text-sm text-center text-gray-500 shadow-sm border-t border-gray-100">
-				© 2026 - Coordinación General Administrativa: Monitoreo, estadística,
-				tendencia y reportes para el análisis de la DLPC.
+				© 2026 - Coordinación General Administrativa
 			</footer>
 		</div>
 	);
