@@ -5,10 +5,11 @@ import { Input } from "@/components/ui/input";
 import { UserDropdown } from "@/components/user-dropdown";
 import type { User } from "@prisma/client";
 import { ChevronLeft, Search } from "lucide-react";
-import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UserDropdownMobile } from "./user-dropdown-mobile";
+
+import Link from "next/link";
 
 export function DashboardNav({ user }: { user: User }) {
 	const pathname = usePathname();
@@ -16,9 +17,8 @@ export function DashboardNav({ user }: { user: User }) {
 	const searchParams = useSearchParams();
 	const [searchQuery, setSearchQuery] = useState(
 		searchParams.get("search") || "",
-	); 
+	);
 
-	// Debounce search update
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			if (searchQuery !== (searchParams.get("search") || "")) {
@@ -59,6 +59,7 @@ export function DashboardNav({ user }: { user: User }) {
 					</div>
 				</div>
 			</nav>
+			
 			<nav className="w-full border-b border-gray-200">
 				<section className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4 py-4">
 					<div className="flex-1 max-w-md">

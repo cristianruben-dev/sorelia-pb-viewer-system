@@ -16,5 +16,12 @@
 			},
 			"recommended": true
 		}
+	},
+		"javascript": {
+		"formatter": {
+			"quoteStyle": "single",
+			"semicolons": "asNeeded",
+			"lineWidth": 80
+		}
 	}
 }
