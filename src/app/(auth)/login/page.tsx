@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
 	Card,
@@ -6,29 +6,29 @@ import {
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card'
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { signIn } from "@/lib/auth-client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { signIn } from '@/lib/auth-client'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
 
 const loginSchema = z.object({
-	email: z.string().email("Email inválido"),
-	password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
-});
+	email: z.string().email('Email inválido'),
+	password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres'),
+})
 
-type LoginForm = z.infer<typeof loginSchema>;
+type LoginForm = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-	const callbackUrl = "/dashboard";
+	const [isLoading, setIsLoading] = useState(false)
+	const [error, setError] = useState<string | null>(null)
+	const callbackUrl = '/dashboard'
 
 	const {
 		register,
@@ -36,35 +36,35 @@ export default function LoginPage() {
 		formState: { errors },
 	} = useForm<LoginForm>({
 		resolver: zodResolver(loginSchema),
-	});
+	})
 
 	const onSubmit = async (data: LoginForm) => {
-		setIsLoading(true);
-		setError(null);
+		setIsLoading(true)
+		setError(null)
 
 		try {
-			const result = await signIn(data.email, data.password);
+			const result = await signIn(data.email, data.password)
 
 			if (result) {
-				toast.success("¡Bienvenido!", {
-					description: "Has iniciado sesión correctamente",
-				});
+				toast.success('¡Bienvenido!', {
+					description: 'Has iniciado sesión correctamente',
+				})
 
 				// Usar window.location para forzar la recarga completa
-				window.location.href = callbackUrl;
+				window.location.href = callbackUrl
 			}
 		} catch (err) {
 			const errorMessage =
 				err instanceof Error
 					? err.message
-					: "Error al iniciar sesión. Inténtalo de nuevo.";
-			setError(errorMessage);
-			toast.error("Error al iniciar sesión", {
+					: 'Error al iniciar sesión. Inténtalo de nuevo.'
+			setError(errorMessage)
+			toast.error('Error al iniciar sesión', {
 				description: errorMessage,
-			});
-			setIsLoading(false);
+			})
+			setIsLoading(false)
 		}
-	};
+	}
 
 	return (
 		<main className="p-4">
@@ -91,7 +91,7 @@ export default function LoginPage() {
 								id="email"
 								type="email"
 								placeholder="Ingrese su correo electrónico"
-								{...register("email")}
+								{...register('email')}
 								disabled={isLoading}
 							/>
 							{errors.email && (
@@ -107,7 +107,7 @@ export default function LoginPage() {
 								id="password"
 								type="password"
 								placeholder="Ingrese su contraseña"
-								{...register("password")}
+								{...register('password')}
 								disabled={isLoading}
 							/>
 							{errors.password && (
@@ -132,11 +132,11 @@ export default function LoginPage() {
 							variant="default"
 							disabled={isLoading}
 						>
-							{isLoading ? "Ingresando..." : "Ingresar al portal"}
+							{isLoading ? 'Ingresando...' : 'Ingresar al portal'}
 						</Button>
 					</form>
 				</CardContent>
 			</Card>
 		</main>
-	);
+	)
 }

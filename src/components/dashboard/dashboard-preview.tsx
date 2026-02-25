@@ -91,8 +91,6 @@ export function DashboardPreview({
         </div>
       )}
 
-      <div className="absolute inset-0 z-20 cursor-pointer bg-transparent" />
-
       <div
         ref={containerRef}
         className="w-full h-full relative"

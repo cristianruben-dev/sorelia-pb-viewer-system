@@ -1,23 +1,23 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth-server";
-import { isUserAdmin } from "@/lib/access-control";
-import { hashPassword } from "@/lib/auth";
-import { z } from "zod";
+import { isUserAdmin } from '@/lib/access-control'
+import { hashPassword } from '@/lib/auth'
+import { getCurrentUser } from '@/lib/auth-server'
+import { prisma } from '@/lib/prisma'
+import { type NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 
 const createUserSchema = z.object({
-	name: z.string().min(1, "El nombre es requerido"),
-	email: z.string().email("Email inválido"),
-	password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
-	role: z.string().default("user"),
-});
+	name: z.string().min(1, 'El nombre es requerido'),
+	email: z.string().email('Email inválido'),
+	password: z.string().min(8, 'La contraseña debe tener al menos 8 caracteres'),
+	role: z.string().default('user'),
+})
 
 export async function GET() {
 	try {
-		const user = await getCurrentUser();
+		const user = await getCurrentUser()
 
 		if (!isUserAdmin(user)) {
-			return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+			return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
 		}
 
 		const users = await prisma.user.findMany({
@@ -35,44 +35,44 @@ export async function GET() {
 					},
 				},
 			},
-			orderBy: { createdAt: "desc" },
-		});
+			orderBy: { createdAt: 'desc' },
+		})
 
-		return NextResponse.json(users);
+		return NextResponse.json(users)
 	} catch (error) {
-		console.error("Error fetching users:", error);
+		console.error('Error fetching users:', error)
 		return NextResponse.json(
-			{ error: "Error interno del servidor" },
+			{ error: 'Error interno del servidor' },
 			{ status: 500 },
-		);
+		)
 	}
 }
 
 export async function POST(request: NextRequest) {
 	try {
-		const user = await getCurrentUser();
+		const user = await getCurrentUser()
 
 		if (!isUserAdmin(user)) {
-			return NextResponse.json({ error: "No autorizado" }, { status: 403 });
+			return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
 		}
 
-		const body = await request.json();
-		const validatedData = createUserSchema.parse(body);
+		const body = await request.json()
+		const validatedData = createUserSchema.parse(body)
 
 		// Verificar que el email no existe
 		const existingUser = await prisma.user.findUnique({
 			where: { email: validatedData.email.toLowerCase() },
-		});
+		})
 
 		if (existingUser) {
 			return NextResponse.json(
-				{ error: "Ya existe un usuario con ese email" },
+				{ error: 'Ya existe un usuario con ese email' },
 				{ status: 400 },
-			);
+			)
 		}
 
 		// Hashear contraseña
-		const hashedPassword = await hashPassword(validatedData.password);
+		const hashedPassword = await hashPassword(validatedData.password)
 
 		// Crear usuario
 		const newUser = await prisma.user.create({
@@ -96,18 +96,18 @@ export async function POST(request: NextRequest) {
 					},
 				},
 			},
-		});
+		})
 
-		return NextResponse.json(newUser);
+		return NextResponse.json(newUser)
 	} catch (error) {
 		if (error instanceof z.ZodError) {
-			return NextResponse.json({ error: "Datos inválidos" }, { status: 400 });
+			return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 })
 		}
 
-		console.error("Error creating user:", error);
+		console.error('Error creating user:', error)
 		return NextResponse.json(
-			{ error: "Error interno del servidor" },
+			{ error: 'Error interno del servidor' },
 			{ status: 500 },
-		);
+		)
 	}
 }
