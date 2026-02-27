@@ -53,7 +53,7 @@ export function UserForm({ user, onSubmit, isLoading = false }: UserFormProps) {
 		defaultValues: {
 			name: user?.name || '',
 			email: user?.email || '',
-			password: '',
+			password: String(),
 			role: user?.role || 'user',
 			active: user?.active ?? true,
 		},

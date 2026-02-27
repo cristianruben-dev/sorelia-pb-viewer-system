@@ -110,9 +110,10 @@ export default function LoginPage() {
 								{...register('password')}
 								disabled={isLoading}
 							/>
-							{errors.password && (
+							{Object.keys(errors).length > 0 && (
 								<p className="text-sm text-red-600">
-									{errors.password.message}
+									Por favor, revisa que los campos de correo y contraseña sean
+									correctos.
 								</p>
 							)}
 						</div>

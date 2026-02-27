@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // Verificar que el reporte existe
-    const report = await prisma.powerBIContent.findUnique({
+    const report = await prisma.powerBIContent.findUniqueOrThrow({
       where: { id: reportId },
       include: {
         userAccess: {
@@ -40,10 +40,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         },
       },
     });
-
-    if (!report) {
-      return NextResponse.json({ error: 'Reporte no encontrado' }, { status: 404 });
-    }
 
     return NextResponse.json(report.userAccess.map(access => access.user));
   } catch (error) {
@@ -69,13 +65,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     const validatedData = assignUsersSchema.parse(body);
 
     // Verificar que el reporte existe
-    const report = await prisma.powerBIContent.findUnique({
+    const report = await prisma.powerBIContent.findUniqueOrThrow({
       where: { id: reportId },
     });
-
-    if (!report) {
-      return NextResponse.json({ error: 'Reporte no encontrado' }, { status: 404 });
-    }
 
     // Eliminar accesos existentes
     await prisma.userReportAccess.deleteMany({

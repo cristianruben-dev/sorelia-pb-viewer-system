@@ -21,19 +21,10 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Find the reset token
-		const resetToken = await prisma.passwordResetToken.findUnique({
+		const resetToken = await prisma.passwordResetToken.findUniqueOrThrow({
 			where: { token },
 		});
 
-		if (!resetToken) {
-			return NextResponse.json(
-				{ error: "Invalid or expired token" },
-				{ status: 400 },
-			);
-		}
-
-		// Check if already used
 		if (resetToken.used) {
 			return NextResponse.json(
 				{ error: "This token has already been used" },
@@ -57,19 +48,12 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		// Find the user
-		const user = await prisma.user.findUnique({
+		const user = await prisma.user.findUniqueOrThrow({
 			where: { email: resetToken.email },
 		});
 
-		if (!user) {
-			return NextResponse.json({ error: "User not found" }, { status: 404 });
-		}
-
-		// Hash the new password
 		const hashedPassword = await bcrypt.hash(password, 10);
 
-		// Update user password and mark token as used
 		await prisma.$transaction([
 			prisma.user.update({
 				where: { id: user.id },
@@ -79,7 +63,6 @@ export async function POST(request: NextRequest) {
 				where: { id: resetToken.id },
 				data: { used: true },
 			}),
-			// Invalidate all existing sessions for security
 			prisma.session.deleteMany({
 				where: { userId: user.id },
 			}),

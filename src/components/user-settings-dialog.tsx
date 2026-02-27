@@ -68,9 +68,9 @@ export function UserSettingsDialog({
 	const passwordForm = useForm<z.infer<typeof passwordSchema>>({
 		resolver: zodResolver(passwordSchema),
 		defaultValues: {
-			currentPassword: '',
-			newPassword: '',
-			confirmPassword: '',
+			currentPassword: String(),
+			newPassword: String(),
+			confirmPassword: String(),
 		},
 	})
 

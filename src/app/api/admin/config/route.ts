@@ -13,7 +13,6 @@ export async function GET() {
 
     const configs = await prisma.systemConfig.findMany();
 
-    // Convertir array a objeto para facilitar uso
     const configObj: Record<string, string> = {};
     configs.forEach((config) => {
       configObj[config.key] = config.value;

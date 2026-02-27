@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, Mail, ArrowLeft } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import Link from "next/link";
 
 export default function ForgotPasswordPage() {

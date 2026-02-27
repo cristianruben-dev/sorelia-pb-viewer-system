@@ -46,13 +46,11 @@ export default async function ReportePage({ params }: PageProps) {
 		notFound();
 	}
 
-	// Verificar acceso
 	const hasAccess = await canUserAccessReport(user, resolvedParams.id);
 	if (!hasAccess) {
 		redirect("/dashboard");
 	}
 
-	// Loggear el acceso al reporte
 	const headersList = await headers();
 	await logReportAccess(
 		user.id,
@@ -61,8 +59,7 @@ export default async function ReportePage({ params }: PageProps) {
 		headersList.get("x-forwarded-for") ?? undefined,
 		headersList.get("user-agent") ?? undefined,
 	);
-
-	// Procesar el HTML del iframe para asegurar que ocupe todo el ancho
+	
 	const processIframeHtml = (html: string) => {
 		if (!html) return "";
 

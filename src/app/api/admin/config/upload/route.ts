@@ -21,7 +21,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validar tipo de archivo
     const validTypes = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
     if (!validTypes.includes(file.type)) {
       return NextResponse.json(
@@ -30,11 +29,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convertir a Buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Subir a Cloudinary
     const url = await uploadToCloudinary(buffer, "sorelia-powerbi/config");
 
     return NextResponse.json({ url });
