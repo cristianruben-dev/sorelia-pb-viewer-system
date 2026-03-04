@@ -15,7 +15,7 @@
     "dev": "next dev --turbo",
     "postinstall": "prisma generate",
     "preview": "next build && next start",
-    "start": "next start",
+    "start": "next start -p 8080",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
