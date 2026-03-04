@@ -1,4 +1,5 @@
 import Image from "next/image";
+import logo from "@/assets/seguridad-gto-logo.png";
 
 export default function AuthLayout({
 	children,
@@ -11,7 +12,7 @@ export default function AuthLayout({
 				<div className="max-w-7xl mx-auto px-4">
 					<div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-4 py-4">
 						<Image
-							src="https://res.cloudinary.com/dwunbkj8v/image/upload/v1759435125/sorelia-powerbi/config/gd378kkoenesylaogmdp.png"
+							src={logo}
 							alt="Logotipo seguridad GTO"
 							width={200}
 							height={50}
