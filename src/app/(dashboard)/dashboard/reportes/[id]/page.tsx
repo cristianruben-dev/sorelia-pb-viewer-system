@@ -1,78 +1,78 @@
-import { canUserAccessReport } from "@/lib/access-control";
-import { getCurrentUser } from "@/lib/auth-server";
-import { prisma } from "@/lib/prisma";
-import { logReportAccess } from "@/lib/report-logger";
-import { headers } from "next/headers";
-import { notFound, redirect } from "next/navigation";
+import { canUserAccessReport } from '@/lib/access-control'
+import { getCurrentUser } from '@/lib/auth-server'
+import { prisma } from '@/lib/prisma'
+import { logReportAccess } from '@/lib/report-logger'
+import { headers } from 'next/headers'
+import { notFound, redirect } from 'next/navigation'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 interface PageProps {
-	params: Promise<{ id: string }>;
+	params: Promise<{ id: string }>
 }
 
 export const generateMetadata = async ({ params }: PageProps) => {
-	const resolvedParams = await params;
+	const resolvedParams = await params
 	const report = await prisma.powerBIContent.findUnique({
 		where: { id: resolvedParams.id },
-	});
+	})
 
 	if (!report) {
 		return {
-			title: "Reporte no encontrado",
-			description: "Reporte no encontrado",
-		};
+			title: 'Reporte no encontrado',
+			description: 'Reporte no encontrado',
+		}
 	}
 
 	return {
 		title: report.title,
 		description: report.title,
-	};
-};
+	}
+}
 
 export default async function ReportePage({ params }: PageProps) {
-	const resolvedParams = await params;
-	const user = await getCurrentUser();
+	const resolvedParams = await params
+	const user = await getCurrentUser()
 
 	if (!user) {
-		redirect("/login");
+		redirect('/login')
 	}
 
 	const report = await prisma.powerBIContent.findUnique({
 		where: { id: resolvedParams.id },
-	});
+	})
 
 	if (!report) {
-		notFound();
+		notFound()
 	}
 
-	const hasAccess = await canUserAccessReport(user, resolvedParams.id);
+	const hasAccess = await canUserAccessReport(user, resolvedParams.id)
 	if (!hasAccess) {
-		redirect("/dashboard");
+		redirect('/dashboard')
 	}
 
-	const headersList = await headers();
+	const headersList = await headers()
 	await logReportAccess(
 		user.id,
 		resolvedParams.id,
 		report.title,
-		headersList.get("x-forwarded-for") ?? undefined,
-		headersList.get("user-agent") ?? undefined,
-	);
-	
+		headersList.get('x-forwarded-for') ?? undefined,
+		headersList.get('user-agent') ?? undefined,
+	)
+
 	const processIframeHtml = (html: string) => {
-		if (!html) return "";
+		if (!html) return ''
 
 		// Reemplazar los atributos de ancho y altura para ocupar todo el espacio
 		return html
 			.replace(/width="[^"]*"/g, 'width="100%"')
 			.replace(/height="[^"]*"/g, 'height="100%"')
-			.replace(/style="[^"]*"/g, 'style="width:100%;height:100%;border:none;"');
-	};
+			.replace(/style="[^"]*"/g, 'style="width:100%;height:100%;border:none;"')
+	}
 
 	const processedIframeHtml = report.iframeHtml
 		? processIframeHtml(report.iframeHtml)
-		: "";
+		: ''
 
 	return (
 		<div className="space-y-6">
@@ -97,5 +97,5 @@ export default async function ReportePage({ params }: PageProps) {
 				)}
 			</div>
 		</div>
-	);
+	)
 }

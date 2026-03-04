@@ -77,7 +77,7 @@ export function UserSettingsDialog({
 	const onProfileSubmit = async (data: z.infer<typeof profileSchema>) => {
 		setIsLoadingProfile(true)
 		try {
-			const response = await fetch(`/api/user/profile`, {
+			const response = await fetch('/api/user/profile', {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(data),
@@ -106,7 +106,7 @@ export function UserSettingsDialog({
 	const onPasswordSubmit = async (data: z.infer<typeof passwordSchema>) => {
 		setIsLoadingPassword(true)
 		try {
-			const response = await fetch(`/api/user/password`, {
+			const response = await fetch('/api/user/password', {
 				method: 'PATCH',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
