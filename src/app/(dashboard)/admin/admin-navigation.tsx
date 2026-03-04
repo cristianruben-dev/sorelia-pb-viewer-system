@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Users, BarChart3, FileText, Settings } from "lucide-react";
+import { Users, BarChart3, FileText } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -29,11 +29,6 @@ export function AdminNavigation() {
       href: "/admin/logs",
       label: "Logs",
       icon: FileText,
-    },
-    {
-      href: "/admin/configuracion",
-      label: "Configuración",
-      icon: Settings,
     },
   ];
 

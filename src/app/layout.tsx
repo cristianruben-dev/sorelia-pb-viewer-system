@@ -3,16 +3,13 @@ import "@/styles/globals.css";
 import type { Metadata } from "next";
 import { Google_Sans_Flex, Protest_Strike } from "next/font/google";
 import { Toaster } from "sonner";
-import { getSystemConfig } from "@/lib/system-config";
 
 export async function generateMetadata(): Promise<Metadata> {
-	const config = await getSystemConfig();
-
 	return {
 		title: "METRA",
 		description: "METRA - Visualizador BI",
 		icons: {
-			icon: config.site_favicon
+			icon: "https://res.cloudinary.com/dwunbkj8v/image/upload/v1759435129/sorelia-powerbi/config/d5bxeacmbwpxmbgpmnwj.png"
 		},
 	};
 }
@@ -27,7 +24,7 @@ const protest_strike = Protest_Strike({
 	weight: "400",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
