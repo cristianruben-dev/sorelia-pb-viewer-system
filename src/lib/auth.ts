@@ -81,9 +81,17 @@ export async function deleteSession(token: string): Promise<void> {
 
 export async function setSessionCookie(token: string): Promise<void> {
 	const cookieStore = await cookies()
+
+	// En producción, por defecto requiere HTTPS (secure: true)
+	// Pero permitimos sobreescribirlo con SECURE_COOKIES='false' para pruebas HTTP en servidores
+	const isSecure =
+		process.env.NODE_ENV === 'production'
+			? process.env.SECURE_COOKIES !== 'false'
+			: false
+
 	cookieStore.set(SESSION_COOKIE_NAME, token, {
 		httpOnly: true,
-		secure: process.env.NODE_ENV === 'production',
+		secure: isSecure,
 		sameSite: 'lax',
 		maxAge: SESSION_DURATION / 1000,
 		path: '/',
