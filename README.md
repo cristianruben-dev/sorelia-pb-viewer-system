@@ -27,3 +27,6 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 ## How do I deploy this?
 
 Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+
+pm2 delete metra
+pm2 start "C:\Users\Administrator\AppData\Local\nvm\v24.14.0\node_modules\npm\bin\npm-cli.js" --name "metra" --cwd "C:\Users\Administrator\Projects\sorelia-pb-viewer-system" -- start
