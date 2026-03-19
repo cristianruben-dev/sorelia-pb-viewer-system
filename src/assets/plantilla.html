@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plataforma en construcción</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Protest+Strike&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #0d3b66;
+      --text-dark: #1c1c1c;
+      --text-muted: #6c757d;
+      --bg: #f5f7fa;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg);
+      color: var(--text-dark);
+    }
+
+    .header {
+      background: #ffffff;
+      border-bottom: 1px solid #eaeaea;
+      padding: 16px 0;
+    }
+
+    .logo {
+      height: 82px;
+    }
+
+    .main-section {
+      min-height: calc(100vh - 100px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .illustration {
+      width: 100%;
+      max-width: 580px;
+      margin-bottom: 32px;
+      opacity: 0.95;
+    }
+
+    .system-name {
+      font-size: 1.5rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+
+    .headline {
+      font-family: 'Protest Strike', sans-serif;
+      font-size: 4.2rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      line-height: 1.2;
+      margin-bottom: 38px;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+    }
+
+    .subtitle a {
+      color: var(--primary);
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .system-name{
+        margin-bottom: 18px;
+      }
+      .headline {
+
+        margin-bottom: 22px;
+      }
+      .headline {
+        font-size: 2rem;
+      }
+
+      .illustration {
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="container text-center">
+      <img src="Logotipo.jpg" alt="Logo Seguridad" class="logo">
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="main-section">
+    <div class="container">
+
+      <!-- Illustration -->
+      <img src="fondo.png" alt="Construcción" class="illustration img-fluid">
+
+      <!-- Content -->
+      <div class="system-name">NOMBRE DEL SISTEMA</div>
+
+      <div class="headline">
+        Estamos en construcción de la plataforma
+      </div>
+
+      <p class="subtitle">
+        Si encuentras algún inconveniente, puedes escribirnos a 
+        <a href="mailto:correo@dominio.com">correo@dominio.com</a>
+      </p>
+
+    </div>
+  </main>
+
+</body>
+</html>
