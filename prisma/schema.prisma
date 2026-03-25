@@ -4,10 +4,8 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
-// Usuario simplificado - todo en uno
 model User {
   id        String   @id @default(cuid())
   name      String

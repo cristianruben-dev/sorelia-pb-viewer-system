@@ -36,11 +36,9 @@ export default function ForgotPasswordPage() {
 				return
 			}
 
-			// Store token and email in sessionStorage for next step
-			sessionStorage.setItem('resetToken', data.token)
+			sessionStorage.setItem('resetToken', data.token || '')
 			sessionStorage.setItem('resetEmail', email)
 
-			// Redirect to verify OTP page
 			router.push('/verify-otp')
 		} catch (err) {
 			setError('An error occurred. Please try again.')
