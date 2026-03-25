@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
 	AlertDialog,
@@ -9,9 +9,9 @@ import {
 	AlertDialogFooter,
 	AlertDialogHeader,
 	AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Avatar } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/alert-dialog'
+import { Avatar } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -19,41 +19,38 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { signOut } from "@/lib/auth-client";
-import type { User } from "@prisma/client";
+} from '@/components/ui/dropdown-menu'
+import { signOut } from '@/lib/auth-client'
+import type { User } from '@prisma/client'
 import {
 	ChevronDown,
 	LayoutDashboard,
 	LogOut,
 	Settings,
 	UserIcon,
-} from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { UserSettingsDialog } from "./user-settings-dialog";
+} from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { UserSettingsDialog } from './user-settings-dialog'
 
 export function UserDropdown({ user }: { user: User }) {
-	const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-	const [showSettings, setShowSettings] = useState(false);
+	const [showLogoutConfirm, setShowLogoutConfirm] = useState(false)
+	const [showSettings, setShowSettings] = useState(false)
 
-	const userIsAdmin = user.role.includes("admin");
+	const userIsAdmin = user.role.includes('admin')
 
-	const router = useRouter();
+	const router = useRouter()
 
 	const handleLogout = async () => {
-		setShowLogoutConfirm(false);
-		await signOut();
-	};
+		setShowLogoutConfirm(false)
+		await signOut()
+	}
 
 	return (
 		<>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<Button
-						variant="ghost"
-						className="flex items-center gap-2"
-					>
+					<Button variant="ghost" className="flex items-center gap-2">
 						<Avatar className="h-8 w-8 flex items-center justify-center bg-primary">
 							<UserIcon className="size-5 text-white" />
 						</Avatar>
@@ -82,7 +79,7 @@ export function UserDropdown({ user }: { user: User }) {
 					</DropdownMenuItem>
 
 					{userIsAdmin && (
-						<DropdownMenuItem onClick={() => router.push("/admin/usuarios")}>
+						<DropdownMenuItem onClick={() => router.push('/admin/usuarios')}>
 							<LayoutDashboard className="mr-2 h-4 w-4" />
 							Panel Admin
 						</DropdownMenuItem>
@@ -121,5 +118,5 @@ export function UserDropdown({ user }: { user: User }) {
 				onOpenChange={setShowSettings}
 			/>
 		</>
-	);
+	)
 }

@@ -1,81 +1,84 @@
-import { prisma } from "@/lib/prisma";
-import type { User } from "@prisma/client";
+import { prisma } from '@/lib/prisma'
+import type { User } from '@prisma/client'
 
-export type AuthUser = User;
+export type AuthUser = User
 
 export function isUserAdmin(user: User | null): boolean {
-  if (!user) return false;
-  return user.role.includes("admin");
+	if (!user) return false
+	return user.role.includes('admin')
 }
 
 export function getUserRoles(user: User): string[] {
-  return user.role.split(",").map(r => r.trim());
+	return user.role.split(',').map((r) => r.trim())
 }
 
-export async function canUserAccessReport(user: User | null, reportId: string): Promise<boolean> {
-  if (!user) return false;
+export async function canUserAccessReport(
+	user: User | null,
+	reportId: string,
+): Promise<boolean> {
+	if (!user) return false
 
-  // Los administradores tienen acceso a todo
-  if (isUserAdmin(user)) return true;
+	// Los administradores tienen acceso a todo
+	if (isUserAdmin(user)) return true
 
-  // Verificar si el usuario tiene acceso directo al reporte
-  const access = await prisma.userReportAccess.findUnique({
-    where: {
-      userId_reportId: {
-        userId: user.id,
-        reportId,
-      },
-    },
-  });
+	// Verificar si el usuario tiene acceso directo al reporte
+	const access = await prisma.userReportAccess.findUnique({
+		where: {
+			userId_reportId: {
+				userId: user.id,
+				reportId,
+			},
+		},
+	})
 
-  return !!access;
+	return !!access
 }
 
 export async function filterAccessibleReports(user: User | null) {
-  if (!user) return [];
+	if (!user) return []
 
-  // Si es admin, devolver todos los reportes
-  if (isUserAdmin(user)) {
-    return await prisma.powerBIContent.findMany({
-      include: {
-        userAccess: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
-  }
+	// Si es admin, devolver todos los reportes
+	if (isUserAdmin(user)) {
+		return await prisma.powerBIContent.findMany({
+			include: {
+				userAccess: {
+					include: {
+						user: {
+							select: {
+								id: true,
+								name: true,
+								email: true,
+							},
+						},
+					},
+				},
+			},
+			orderBy: { createdAt: 'desc' },
+		})
+	}
 
-  // Para usuarios normales, solo reportes a los que tienen acceso
-  return await prisma.powerBIContent.findMany({
-    where: {
-      userAccess: {
-        some: {
-          userId: user.id,
-        },
-      },
-    },
-    include: {
-      userAccess: {
-        include: {
-          user: {
-            select: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
-        },
-      },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+	// Para usuarios normales, solo reportes a los que tienen acceso
+	return await prisma.powerBIContent.findMany({
+		where: {
+			userAccess: {
+				some: {
+					userId: user.id,
+				},
+			},
+		},
+		include: {
+			userAccess: {
+				include: {
+					user: {
+						select: {
+							id: true,
+							name: true,
+							email: true,
+						},
+					},
+				},
+			},
+		},
+		orderBy: { createdAt: 'desc' },
+	})
 }

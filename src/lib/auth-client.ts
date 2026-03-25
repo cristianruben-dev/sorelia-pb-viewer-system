@@ -1,21 +1,19 @@
-"use client";
+'use client'
+
+import { loginAction } from '@/actions/auth/login'
+import { logoutAction } from '@/actions/auth/logout'
 
 export async function signIn(email: string, password: string) {
-  const response = await fetch("/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+	const result = await loginAction(email, password)
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || "Error al iniciar sesión");
-  }
+	if (result.error) {
+		throw new Error(result.error || 'Error al iniciar sesión')
+	}
 
-  return response.json();
+	return result
 }
 
 export async function signOut() {
-  await fetch("/api/auth/logout", { method: "POST" });
-  window.location.href = "/login";
-} 
+	await logoutAction()
+	window.location.href = '/login'
+}

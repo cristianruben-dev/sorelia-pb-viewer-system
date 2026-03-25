@@ -1,136 +1,52 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth-server";
-import { isUserAdmin } from "@/lib/access-control";
+import { isUserAdmin } from '@/lib/access-control'
+import { getCurrentUser } from '@/lib/auth-server'
+import { prisma } from '@/lib/prisma'
+import { type NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 
 const updateDashboardSchema = z.object({
-  title: z.string().min(1, "El título es requerido").optional(),
-  iframeHtml: z.string().optional(),
-});
+	title: z.string().min(1, 'El título es requerido').optional(),
+	iframeHtml: z.string().optional(),
+})
 
 interface RouteParams {
-  params: Promise<{ id: string }>;
+	params: Promise<{ id: string }>
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
-  try {
-    const user = await getCurrentUser();
-    const { id } = await params;
+	try {
+		const user = await getCurrentUser()
+		const { id } = await params
 
-    if (!isUserAdmin(user)) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 403 });
-    }
+		if (!isUserAdmin(user)) {
+			return NextResponse.json({ error: 'No autorizado' }, { status: 403 })
+		}
 
-    const dashboard = await prisma.powerBIContent.findUnique({
-      where: { id },
-      include: {
-        _count: {
-          select: {
-            userAccess: true,
-          },
-        },
-      },
-    });
+		const dashboard = await prisma.powerBIContent.findUnique({
+			where: { id },
+			include: {
+				_count: {
+					select: {
+						userAccess: true,
+					},
+				},
+			},
+		})
 
-    if (!dashboard) {
-      return NextResponse.json({ error: "Dashboard no encontrado" }, { status: 404 });
-    }
+		if (!dashboard) {
+			return NextResponse.json(
+				{ error: 'Dashboard no encontrado' },
+				{ status: 404 },
+			)
+		}
 
-    return NextResponse.json(dashboard);
-  } catch (error) {
-    console.error("Error fetching dashboard:", error);
-    return NextResponse.json(
-      { error: "Error interno del servidor" },
-      { status: 500 }
-    );
-  }
+		return NextResponse.json(dashboard)
+	} catch (error) {
+		console.error('Error fetching dashboard:', error)
+		return NextResponse.json(
+			{ error: 'Error interno del servidor' },
+			{ status: 500 },
+		)
+	}
 }
 
-export async function PATCH(request: NextRequest, { params }: RouteParams) {
-  try {
-    const user = await getCurrentUser();
-    const { id } = await params;
-
-    if (!isUserAdmin(user)) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 403 });
-    }
-
-    const body = await request.json();
-    const validatedData = updateDashboardSchema.parse(body);
-
-    // Verificar que el dashboard existe
-    const existingDashboard = await prisma.powerBIContent.findUnique({
-      where: { id },
-    });
-
-    if (!existingDashboard) {
-      return NextResponse.json({ error: "Dashboard no encontrado" }, { status: 404 });
-    }
-
-    // Preparar datos para actualización
-    const updateData: any = {};
-
-    if (validatedData.title !== undefined) updateData.title = validatedData.title;
-    if (validatedData.iframeHtml !== undefined) updateData.iframeHtml = validatedData.iframeHtml;
-
-    const updatedDashboard = await prisma.powerBIContent.update({
-      where: { id },
-      data: updateData,
-      include: {
-        _count: {
-          select: {
-            userAccess: true,
-          },
-        },
-      },
-    });
-
-    return NextResponse.json(updatedDashboard);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Datos inválidos" },
-        { status: 400 }
-      );
-    }
-
-    console.error("Error updating dashboard:", error);
-    return NextResponse.json(
-      { error: "Error interno del servidor" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
-  try {
-    const user = await getCurrentUser();
-    const { id } = await params;
-
-    if (!isUserAdmin(user)) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 403 });
-    }
-
-    // Verificar que el dashboard existe
-    const existingDashboard = await prisma.powerBIContent.findUnique({
-      where: { id },
-    });
-
-    if (!existingDashboard) {
-      return NextResponse.json({ error: "Dashboard no encontrado" }, { status: 404 });
-    }
-
-    await prisma.powerBIContent.delete({
-      where: { id },
-    });
-
-    return NextResponse.json({ message: "Dashboard eliminado exitosamente" });
-  } catch (error) {
-    console.error("Error deleting dashboard:", error);
-    return NextResponse.json(
-      { error: "Error interno del servidor" },
-      { status: 500 }
-    );
-  }
-} 

@@ -25,6 +25,8 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import { updateUserProfileAction } from '@/actions/user/update-profile'
+import { updateUserPasswordAction } from '@/actions/user/update-password'
 
 const profileSchema = z.object({
 	name: z.string().min(1, 'El nombre es requerido'),
@@ -77,15 +79,10 @@ export function UserSettingsDialog({
 	const onProfileSubmit = async (data: z.infer<typeof profileSchema>) => {
 		setIsLoadingProfile(true)
 		try {
-			const response = await fetch('/api/user/profile', {
-				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify(data),
-			})
+			const result = await updateUserProfileAction(data.name)
 
-			if (!response.ok) {
-				const error = await response.json()
-				throw new Error(error.error || 'Error al actualizar perfil')
+			if (result.error) {
+				throw new Error(result.error || 'Error al actualizar perfil')
 			}
 
 			toast.success('Perfil actualizado', {
@@ -106,18 +103,10 @@ export function UserSettingsDialog({
 	const onPasswordSubmit = async (data: z.infer<typeof passwordSchema>) => {
 		setIsLoadingPassword(true)
 		try {
-			const response = await fetch('/api/user/password', {
-				method: 'PATCH',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({
-					currentPassword: data.currentPassword,
-					newPassword: data.newPassword,
-				}),
-			})
+			const result = await updateUserPasswordAction(data.currentPassword, data.newPassword)
 
-			if (!response.ok) {
-				const error = await response.json()
-				throw new Error(error.error || 'Error al cambiar contraseña')
+			if (result.error) {
+				throw new Error(result.error || 'Error al cambiar contraseña')
 			}
 
 			toast.success('Contraseña actualizada', {

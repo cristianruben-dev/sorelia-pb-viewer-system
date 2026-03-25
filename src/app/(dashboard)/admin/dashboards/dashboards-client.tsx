@@ -1,70 +1,68 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { DataTable } from "@/components/ui/data-table";
-import { createDashboardColumns } from "@/components/tables/dashboard-columns";
-import { useRouter } from "next/navigation";
-import { Card, CardContent } from "@/components/ui/card";
+import { createDashboardColumns } from '@/components/tables/dashboard-columns'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { DataTable } from '@/components/ui/data-table'
+import { Plus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
-import Link from "next/link";
+import Link from 'next/link'
 
-import type { PowerBIContent } from "@prisma/client";
+import type { PowerBIContent } from '@prisma/client'
 
 type DashboardWithCounts = PowerBIContent & {
-  _count: {
-    userAccess: number;
-  };
-};
+	_count: {
+		userAccess: number
+	}
+}
 
 interface DashboardsClientProps {
-  dashboards: DashboardWithCounts[];
+	dashboards: DashboardWithCounts[]
 }
 
 export function DashboardsClient({ dashboards }: DashboardsClientProps) {
-  const router = useRouter();
+	const router = useRouter()
 
-  const handleDelete = () => {
-    router.refresh();
-  };
+	const handleDelete = () => {
+		router.refresh()
+	}
 
-  const handleUpdate = () => {
-    router.refresh();
-  };
+	const handleUpdate = () => {
+		router.refresh()
+	}
 
-  const columns = createDashboardColumns(handleDelete, handleUpdate);
+	const columns = createDashboardColumns(handleDelete, handleUpdate)
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Dashboards</h2>
-          <p className="text-muted-foreground">
-            Gestiona los dashboards de Power BI
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/admin/dashboards/nuevo">
-            <Plus className="h-4 w-4 mr-2" />
-            Nuevo Dashboard
-          </Link>
-        </Button>
-      </div>
+	return (
+		<div className="space-y-6">
+			{/* Header */}
+			<div className="flex items-center justify-between">
+				<div>
+					<h2 className="text-3xl font-bold tracking-tight">Dashboards</h2>
+					<p className="text-muted-foreground">
+						Gestiona los dashboards de Power BI
+					</p>
+				</div>
+				<Button asChild>
+					<Link href="/admin/dashboards/nuevo">
+						<Plus className="h-4 w-4 mr-2" />
+						Nuevo Dashboard
+					</Link>
+				</Button>
+			</div>
 
-      {/* DataTable */}
-      <Card>
-        <CardContent>
-          <DataTable
-            columns={columns}
-            data={dashboards}
-            searchKey="title"
-            searchPlaceholder="Buscar dashboards..."
-          />
-        </CardContent>
-      </Card>
-    </div>
-  );
+			{/* DataTable */}
+			<Card>
+				<CardContent>
+					<DataTable
+						columns={columns}
+						data={dashboards}
+						searchKey="title"
+						searchPlaceholder="Buscar dashboards..."
+					/>
+				</CardContent>
+			</Card>
+		</div>
+	)
 }
-
-

@@ -1,41 +1,41 @@
-"use client";
+'use client'
 
-import { SystemLogo } from "@/components/system-logo";
-import { Input } from "@/components/ui/input";
-import { UserDropdown } from "@/components/user-dropdown";
-import type { User } from "@prisma/client";
-import { ChevronLeft, Search } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { UserDropdownMobile } from "./user-dropdown-mobile";
+import { SystemLogo } from '@/components/system-logo'
+import { Input } from '@/components/ui/input'
+import { UserDropdown } from '@/components/user-dropdown'
+import type { User } from '@prisma/client'
+import { ChevronLeft, Search } from 'lucide-react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { UserDropdownMobile } from './user-dropdown-mobile'
 
-import Link from "next/link";
+import Link from 'next/link'
 
 export function DashboardNav({ user }: { user: User }) {
-	const pathname = usePathname();
-	const router = useRouter();
-	const searchParams = useSearchParams();
+	const pathname = usePathname()
+	const router = useRouter()
+	const searchParams = useSearchParams()
 	const [searchQuery, setSearchQuery] = useState(
-		searchParams.get("search") || "",
-	);
+		searchParams.get('search') || '',
+	)
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
-			if (searchQuery !== (searchParams.get("search") || "")) {
-				const params = new URLSearchParams(searchParams);
+			if (searchQuery !== (searchParams.get('search') || '')) {
+				const params = new URLSearchParams(searchParams)
 				if (searchQuery) {
-					params.set("search", searchQuery);
+					params.set('search', searchQuery)
 				} else {
-					params.delete("search");
+					params.delete('search')
 				}
-				router.replace(`/dashboard?${params.toString()}`);
+				router.replace(`/dashboard?${params.toString()}`)
 			}
-		}, 300);
+		}, 300)
 
-		return () => clearTimeout(timer);
-	}, [searchQuery, searchParams, router]);
+		return () => clearTimeout(timer)
+	}, [searchQuery, searchParams, router])
 
-	const isReportPage = pathname.includes("/dashboard/reportes/");
+	const isReportPage = pathname.includes('/dashboard/reportes/')
 
 	return (
 		<>
@@ -59,7 +59,7 @@ export function DashboardNav({ user }: { user: User }) {
 					</div>
 				</div>
 			</nav>
-			
+
 			<nav className="w-full border-b border-gray-200">
 				<section className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4 py-4">
 					<div className="flex-1 max-w-md">
@@ -95,5 +95,5 @@ export function DashboardNav({ user }: { user: User }) {
 				</section>
 			</nav>
 		</>
-	);
+	)
 }

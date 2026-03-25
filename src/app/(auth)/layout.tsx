@@ -1,10 +1,10 @@
-import Image from "next/image";
-import logo from "@/assets/seguridad-gto-logo.png";
+import logo from '@/assets/seguridad-gto-logo.png'
+import Image from 'next/image'
 
 export default function AuthLayout({
 	children,
 }: {
-	children: React.ReactNode;
+	children: React.ReactNode
 }) {
 	return (
 		<main className="min-h-screen h-screen bg-[#f7f8fa] flex flex-col overflow-hidden">
@@ -40,5 +40,5 @@ export default function AuthLayout({
 				© 2026 - Coordinación General Administrativa
 			</footer>
 		</main>
-	);
+	)
 }

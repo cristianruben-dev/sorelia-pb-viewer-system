@@ -1,31 +1,34 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { DataTable } from "@/components/ui/data-table";
-import { Plus } from "lucide-react";
-import { useState } from "react";
-import { UserCreateDialog } from "@/components/admin/user-create-dialog";
-import { createUserColumns, type UserWithCounts } from "@/components/tables/user-columns";
+import { UserCreateDialog } from '@/components/admin/user-create-dialog'
+import {
+	type UserWithCounts,
+	createUserColumns,
+} from '@/components/tables/user-columns'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { DataTable } from '@/components/ui/data-table'
+import { Plus } from 'lucide-react'
+import { useState } from 'react'
 
 interface UsersManagementProps {
-	users: UserWithCounts[];
+	users: UserWithCounts[]
 }
 
 export function UsersManagement({ users }: UsersManagementProps) {
-	const [showCreateDialog, setShowCreateDialog] = useState(false);
+	const [showCreateDialog, setShowCreateDialog] = useState(false)
 
 	const handleSuccess = async () => {
-		setShowCreateDialog(false);
-		window.location.reload();
-	};
+		setShowCreateDialog(false)
+		window.location.reload()
+	}
 
 	const handleRolesUpdated = () => {
-		window.location.reload();
-	};
+		window.location.reload()
+	}
 
 	// Crear las columnas con el callback
-	const columns = createUserColumns(handleRolesUpdated);
+	const columns = createUserColumns(handleRolesUpdated)
 
 	return (
 		<div className="space-y-6">
@@ -54,5 +57,5 @@ export function UsersManagement({ users }: UsersManagementProps) {
 				onSuccess={handleSuccess}
 			/>
 		</div>
-	);
+	)
 }

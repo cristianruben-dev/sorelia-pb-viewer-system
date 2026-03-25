@@ -1,26 +1,25 @@
-import { prisma } from "./prisma";
+import { prisma } from './prisma'
 
 export async function logReportAccess(
-  userId: string,
-  reportId: string,
-  reportTitle: string,
-  ipAddress?: string,
-  userAgent?: string
+	userId: string,
+	reportId: string,
+	reportTitle: string,
+	ipAddress?: string,
+	userAgent?: string,
 ): Promise<void> {
-  try {
-    await prisma.activityLog.create({
-      data: {
-        userId,
-        type: "report_access",
-        action: `Accedió al reporte: ${reportTitle}`,
-        reportId,
-        ipAddress,
-        userAgent,
-      },
-    });
-  } catch (error) {
-    // No fallar si el log falla, solo registrar el error
-    console.error("Error logging report access:", error);
-  }
+	try {
+		await prisma.activityLog.create({
+			data: {
+				userId,
+				type: 'report_access',
+				action: `Accedió al reporte: ${reportTitle}`,
+				reportId,
+				ipAddress,
+				userAgent,
+			},
+		})
+	} catch (error) {
+		// No fallar si el log falla, solo registrar el error
+		console.error('Error logging report access:', error)
+	}
 }
-

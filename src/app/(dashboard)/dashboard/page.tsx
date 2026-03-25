@@ -1,32 +1,32 @@
-import { DashboardPreview } from "@/components/dashboard/dashboard-preview";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { filterAccessibleReports } from "@/lib/access-control";
-import { getCurrentUser } from "@/lib/auth-server";
-import { cn } from "@/lib/utils";
-import { Eye } from "lucide-react";
+import { DashboardPreview } from '@/components/dashboard/dashboard-preview'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { filterAccessibleReports } from '@/lib/access-control'
+import { getCurrentUser } from '@/lib/auth-server'
+import { cn } from '@/lib/utils'
+import { Eye } from 'lucide-react'
 
-import Link from "next/link";
+import Link from 'next/link'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 interface DashboardPageProps {
-	searchParams: Promise<{ search?: string }>;
+	searchParams: Promise<{ search?: string }>
 }
 
 export default async function DashboardPage({
 	searchParams,
 }: DashboardPageProps) {
-	const resolvedSearchParams = await searchParams;
-	const searchQuery = resolvedSearchParams.search?.toLowerCase();
+	const resolvedSearchParams = await searchParams
+	const searchQuery = resolvedSearchParams.search?.toLowerCase()
 
-	const user = await getCurrentUser();
-	let reports = await filterAccessibleReports(user);
+	const user = await getCurrentUser()
+	let reports = await filterAccessibleReports(user)
 
 	if (searchQuery && reports) {
 		reports = reports.filter((report) =>
 			report.title.toLowerCase().includes(searchQuery),
-		);
+		)
 	}
 
 	if (!reports || reports.length === 0) {
@@ -36,27 +36,27 @@ export default async function DashboardPage({
 					No hay reportes disponibles en este momento.
 				</CardContent>
 			</Card>
-		);
+		)
 	}
 
 	return (
 		<div className="space-y-4 md:space-y-6">
 			<div
 				className={cn(
-					"grid gap-4 transition-all duration-500 ease-in-out md:gap-6",
-					"grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+					'grid gap-4 transition-all duration-500 ease-in-out md:gap-6',
+					'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
 				)}
 			>
 				{reports.map((report, index) => (
 					<Card
 						key={report.id}
 						className={cn(
-							"group transition-all duration-300",
-							"animate-in fade-in slide-in-from-bottom-4",
+							'group transition-all duration-300',
+							'animate-in fade-in slide-in-from-bottom-4',
 						)}
 						style={{
 							animationDelay: `${index * 50}ms`,
-							animationFillMode: "backwards",
+							animationFillMode: 'backwards',
 						}}
 					>
 						<CardHeader>
@@ -85,5 +85,5 @@ export default async function DashboardPage({
 				))}
 			</div>
 		</div>
-	);
+	)
 }

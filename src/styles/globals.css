@@ -2,9 +2,10 @@
 @import "tw-animate-css";
 
 @theme {
-	--font-sans: var(--font-google-sans-flex), ui-sans-serif, system-ui, sans-serif,
-		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-	--font-vollkorn: var(--font-vollkorn), ui-sans-serif, system-ui, sans-serif,
+	--font-sans: var(--font-google-sans-flex), ui-sans-serif, system-ui,
+		sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+		"Noto Color Emoji";
+	--font-vollkorn: var(--font-vollkorn), ui-sans-serif, system-ui, sans-serif,;
 }
 
 @theme inline {
@@ -91,7 +92,6 @@
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
 }
-
 
 @layer base {
 	* {

@@ -17,6 +17,8 @@ import { ArrowLeft, Loader2, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { verifyOtpAction } from '@/actions/auth/verify-otp'
+import { forgotPasswordAction } from '@/actions/auth/forgot-password'
 
 export default function VerifyOTPPage() {
 	const router = useRouter()
@@ -70,15 +72,9 @@ export default function VerifyOTPPage() {
 		setIsLoading(true)
 
 		try {
-			const response = await fetch('/api/auth/verify-otp', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ token, code: otp }),
-			})
+			const data = await verifyOtpAction(token, otp)
 
-			const data = await response.json()
-
-			if (!response.ok) {
+			if (data.error) {
 				setError(data.error || 'Invalid code')
 				setIsLoading(false)
 				return
@@ -97,23 +93,17 @@ export default function VerifyOTPPage() {
 		setIsLoading(true)
 
 		try {
-			const response = await fetch('/api/auth/forgot-password', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ email }),
-			})
+			const data = await forgotPasswordAction(email)
 
-			const data = await response.json()
-
-			if (!response.ok) {
+			if (data.error || !data.token) {
 				setError(data.error || 'Failed to resend code')
 				setIsLoading(false)
 				return
 			}
 
 			// Update token
-			sessionStorage.setItem('resetToken', data.token)
-			setToken(data.token)
+			sessionStorage.setItem('resetToken', data.token as string)
+			setToken(data.token as string)
 			setTimeLeft(15 * 60) // Reset timer
 			setOtp('') // Clear OTP input
 			setIsLoading(false)
@@ -128,6 +118,7 @@ export default function VerifyOTPPage() {
 		if (otp.length === 6 && !isLoading) {
 			handleVerify()
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [otp])
 
 	return (

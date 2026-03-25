@@ -1,108 +1,112 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Loader2, Mail } from "lucide-react";
-import Link from "next/link";
+import { forgotPasswordAction } from '@/actions/auth/forgot-password'
+import { Button } from '@/components/ui/button'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Loader2, Mail } from 'lucide-react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export default function ForgotPasswordPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+	const router = useRouter()
+	const [email, setEmail] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
+	const [error, setError] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault()
+		setError('')
+		setIsLoading(true)
 
-    try {
-      const response = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+		try {
+			const data = await forgotPasswordAction(email)
 
-      const data = await response.json();
+			if (data.error) {
+				setError(data.error || 'Failed to send reset code')
+				setIsLoading(false)
+				return
+			}
 
-      if (!response.ok) {
-        setError(data.error || "Failed to send reset code");
-        setIsLoading(false);
-        return;
-      }
+			// Store token and email in sessionStorage for next step
+			sessionStorage.setItem('resetToken', data.token)
+			sessionStorage.setItem('resetEmail', email)
 
-      // Store token and email in sessionStorage for next step
-      sessionStorage.setItem("resetToken", data.token);
-      sessionStorage.setItem("resetEmail", email);
+			// Redirect to verify OTP page
+			router.push('/verify-otp')
+		} catch (err) {
+			setError('An error occurred. Please try again.')
+			setIsLoading(false)
+		}
+	}
 
-      // Redirect to verify OTP page
-      router.push("/verify-otp");
-    } catch (err) {
-      setError("An error occurred. Please try again.");
-      setIsLoading(false);
-    }
-  };
+	return (
+		<div className="p-4">
+			<Card className="w-full">
+				<CardHeader className="text-center">
+					<CardTitle className="font-bold text-primary">
+						OLVIDÉ MI CONTRASEÑA
+					</CardTitle>
+					<CardDescription>
+						Ingresa tu correo electrónico y te enviaremos un código de
+						verificación
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<form onSubmit={handleSubmit} className="space-y-4">
+						<div className="space-y-2">
+							<Label htmlFor="email">Correo Electrónico</Label>
+							<div className="relative">
+								<Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+								<Input
+									id="email"
+									type="email"
+									placeholder="Ingrese su correo electrónico"
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
+									required
+									disabled={isLoading}
+									className="pl-10"
+								/>
+							</div>
+						</div>
 
-  return (
-    <div className="p-4">
-      <Card className="w-full">
-        <CardHeader className="text-center">
-          <CardTitle className="font-bold text-primary">OLVIDÉ MI CONTRASEÑA</CardTitle>
-          <CardDescription>
-            Ingresa tu correo electrónico y te enviaremos un código de verificación
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Correo Electrónico</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="Ingrese su correo electrónico"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={isLoading}
-                  className="pl-10"
-                />
-              </div>
-            </div>
+						{error && (
+							<div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+								{error}
+							</div>
+						)}
 
-            {error && (
-              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                {error}
-              </div>
-            )}
+						<Button
+							type="submit"
+							className="w-full py-6 mt-6"
+							variant="default"
+							disabled={isLoading}
+						>
+							{isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+							Enviar código
+						</Button>
 
-            <Button
-              type="submit"
-              className="w-full py-6 mt-6"
-              variant="default"
-              disabled={isLoading}
-            >
-              {isLoading && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-
-              Enviar código
-            </Button>
-
-            <div className="text-center text-sm text-muted-foreground">
-              ¿Recordaste tu contraseña?{" "}
-              <Link href="/login" className="text-primary underline-offset-4 hover:underline">
-                Iniciar sesión
-              </Link>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
-  );
+						<div className="text-center text-sm text-muted-foreground">
+							¿Recordaste tu contraseña?{' '}
+							<Link
+								href="/login"
+								className="text-primary underline-offset-4 hover:underline"
+							>
+								Iniciar sesión
+							</Link>
+						</div>
+					</form>
+				</CardContent>
+			</Card>
+		</div>
+	)
 }

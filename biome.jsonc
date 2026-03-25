@@ -17,7 +17,7 @@
 			"recommended": true
 		}
 	},
-		"javascript": {
+	"javascript": {
 		"formatter": {
 			"quoteStyle": "single",
 			"semicolons": "asNeeded",

@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label'
 import { CheckCircle2, Eye, EyeOff, Loader2, Lock } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { resetPasswordAction } from '@/actions/auth/reset-password'
 
 export default function ResetPasswordPage() {
 	const router = useRouter()
@@ -75,15 +76,9 @@ export default function ResetPasswordPage() {
 		setIsLoading(true)
 
 		try {
-			const response = await fetch('/api/auth/reset-password', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ token, password }),
-			})
+			const data = await resetPasswordAction(token, password)
 
-			const data = await response.json()
-
-			if (!response.ok) {
+			if (data.error) {
 				setError(data.error || 'Failed to reset password')
 				setIsLoading(false)
 				return

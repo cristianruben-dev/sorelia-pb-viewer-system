@@ -1,21 +1,21 @@
-import { DashboardNav } from "@/components/dashboard-nav";
-import { getCurrentUser } from "@/lib/auth-server";
-import { redirect } from "next/navigation";
+import { DashboardNav } from '@/components/dashboard-nav'
+import { getCurrentUser } from '@/lib/auth-server'
+import { redirect } from 'next/navigation'
 
 // Marcar como página dinámica para evitar errores con headers()
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 interface DashboardLayoutProps {
-	children: React.ReactNode;
+	children: React.ReactNode
 }
 
 export default async function DashboardLayout({
 	children,
 }: DashboardLayoutProps) {
-	const user = await getCurrentUser();
+	const user = await getCurrentUser()
 
 	if (!user) {
-		redirect("/login");
+		redirect('/login')
 	}
 
 	return (
@@ -30,5 +30,5 @@ export default async function DashboardLayout({
 				© 2026 - Coordinación General Administrativa
 			</footer>
 		</div>
-	);
+	)
 }

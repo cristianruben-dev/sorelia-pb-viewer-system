@@ -1,7 +1,7 @@
 'use client'
 
-import Image from 'next/image'
 import logo from '@/assets/seguridad-gto-logo.png'
+import Image from 'next/image'
 
 export function SystemLogo() {
 	return (
